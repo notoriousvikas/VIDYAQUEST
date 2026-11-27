@@ -18,7 +18,7 @@ export const leaderboardQuerySchema = z.object({
   query: z.object({
     type: z.enum(['global', 'school', 'class', 'subject']).default('global'),
     period: z.enum(['all-time', 'weekly', 'monthly']).default('all-time'),
-    subject: z.enum(['chemistry', 'physics', 'biology', 'mathematics']).optional(),
+    subject: z.enum(['chemistry', 'physics', 'biology', 'mathematics', 'coding']).optional(),
     limit: z.coerce.number().int().min(1).max(100).default(20),
     page: z.coerce.number().int().min(1).default(1),
   }),
@@ -28,7 +28,7 @@ export const leaderboardMeQuerySchema = z.object({
   query: z.object({
     type: z.enum(['global', 'school', 'class', 'subject']).default('global'),
     period: z.enum(['all-time', 'weekly', 'monthly']).default('all-time'),
-    subject: z.enum(['chemistry', 'physics', 'biology', 'mathematics']).optional(),
+    subject: z.enum(['chemistry', 'physics', 'biology', 'mathematics', 'coding']).optional(),
   }),
 });
 

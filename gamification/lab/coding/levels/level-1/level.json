@@ -1,0 +1,24 @@
+{
+  "levelId": "level-1",
+  "levelNumber": 1,
+  "missionSlug": "code-1",
+  "labId": "coding-level-1",
+  "title": "First Steps",
+  "subtitle": "Hello World, Print Statements & Basic I/O",
+  "difficulty": "Beginner",
+  "topics": [
+    "Hello World",
+    "Print statements",
+    "Comments",
+    "Basic syntax",
+    "Basic input/output"
+  ],
+  "completionBonusXp": 100,
+  "challengeIds": [
+    "l1-c1",
+    "l1-c2",
+    "l1-c3",
+    "l1-c4",
+    "l1-c5"
+  ]
+}

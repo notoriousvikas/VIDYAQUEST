@@ -1,0 +1,63 @@
+{
+  "id": "l2-c2",
+  "order": 2,
+  "title": "Add Two Numbers",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Integers & Type conversion",
+  "description": "Read two integers separated by space or newline and print their sum.",
+  "instructions": [
+    "Parse both inputs as integers (not strings, so `3 + 5` gives `8`, not `35`).",
+    "Print only the resulting integer sum."
+  ],
+  "constraints": [
+    "-10^6 <= a, b <= 10^6"
+  ],
+  "examples": [
+    {
+      "input": "12 8",
+      "output": "20"
+    },
+    {
+      "input": "-5 15",
+      "output": "10"
+    }
+  ],
+  "hints": [
+    "Splitting stdin by whitespace (`.split()`) handles both space-separated and newline-separated numbers.",
+    "Convert tokens to integer before adding.",
+    "Print only the sum number."
+  ],
+  "starterCode": {
+    "python": "import sys\ntokens = sys.stdin.read().split()\na, b = int(tokens[0]), int(tokens[1])\n# Print a + b\n",
+    "javascript": "const fs = require(\"fs\");\nconst tokens = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/);\nconst a = parseInt(tokens[0], 10);\nconst b = parseInt(tokens[1], 10);\n// Print a + b\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        // Print a + b\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "12 8",
+      "expectedOutput": "20",
+      "description": "Positive integers"
+    },
+    {
+      "id": "pub-2",
+      "input": "-5 15",
+      "expectedOutput": "10",
+      "description": "Negative and positive"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "0 0",
+      "expectedOutput": "0"
+    },
+    {
+      "id": "hid-2",
+      "input": "1000 2500",
+      "expectedOutput": "3500"
+    }
+  ],
+  "levelId": "level-2"
+}

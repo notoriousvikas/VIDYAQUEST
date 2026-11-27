@@ -1,0 +1,63 @@
+{
+  "id": "l4-c3",
+  "order": 3,
+  "title": "Sum of N Natural Numbers",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "While / For loops",
+  "description": "Read a positive integer `N` and calculate the sum of all integers from `1` to `N` using a loop.",
+  "instructions": [
+    "Initialize `total = 0`.",
+    "Add every integer from `1` to `N` into `total` and print `total`."
+  ],
+  "constraints": [
+    "1 <= N <= 100000"
+  ],
+  "examples": [
+    {
+      "input": "5",
+      "output": "15"
+    },
+    {
+      "input": "10",
+      "output": "55"
+    }
+  ],
+  "hints": [
+    "In Java, use `long` if `N` can be up to 100,000 (sum ~ 5 * 10^9).",
+    "Loop `i` from 1 to N and accumulate `total += i`.",
+    "Print `total`."
+  ],
+  "starterCode": {
+    "python": "n = int(input().strip())\n# Compute and print sum 1..n\n",
+    "javascript": "const fs = require(\"fs\");\nconst n = parseInt(fs.readFileSync(0, \"utf8\").trim(), 10);\n// Compute and print sum 1..n\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long n = sc.nextLong();\n        // Compute and print sum 1..n\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "5",
+      "expectedOutput": "15",
+      "description": "Sum 1..5"
+    },
+    {
+      "id": "pub-2",
+      "input": "10",
+      "expectedOutput": "55",
+      "description": "Sum 1..10"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "1",
+      "expectedOutput": "1"
+    },
+    {
+      "id": "hid-2",
+      "input": "100",
+      "expectedOutput": "5050"
+    }
+  ],
+  "levelId": "level-4"
+}

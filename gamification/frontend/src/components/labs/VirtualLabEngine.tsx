@@ -17,6 +17,7 @@ import { LabCompleteResponse, PublicLabMetadata } from '@/types/lab';
 import { LevelNode } from '@/types/worldMap';
 import { Html3dLabFrame } from './Html3dLabFrame';
 import { ThreeModelLabViewer } from './ThreeModelLabViewer';
+import { CodingLabWorkspace } from './coding/CodingLabWorkspace';
 
 interface VirtualLabEngineProps {
   level: LevelNode;
@@ -223,6 +224,16 @@ export function VirtualLabEngine({
           </div>
         </div>
       </div>
+    );
+  }
+
+  if (lab.labFormat === 'coding_ide') {
+    return (
+      <CodingLabWorkspace
+        lab={lab}
+        levelNode={level}
+        onLabCompleted={onLabCompleted}
+      />
     );
   }
 

@@ -1,0 +1,53 @@
+{
+  "id": "l5-c1",
+  "order": 1,
+  "title": "Addition Function",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Functions & Return values",
+  "description": "Write a function `add(a, b)` that returns the sum of two integers `a` and `b`. Read two integers from input, call `add(a, b)`, and print the returned value.",
+  "instructions": [
+    "Define a function named `add` taking two integer parameters.",
+    "Return `a + b` from the function and print the result in main."
+  ],
+  "constraints": [
+    "-10^6 <= a, b <= 10^6"
+  ],
+  "examples": [
+    {
+      "input": "7 13",
+      "output": "20"
+    }
+  ],
+  "hints": [
+    "Python: `def add(a, b): return a + b`",
+    "JavaScript: `function add(a, b) { return a + b; }`",
+    "Java: `static int add(int a, int b) { return a + b; }`"
+  ],
+  "starterCode": {
+    "python": "import sys\n\ndef add(a, b):\n    # Return sum\n    pass\n\na, b = map(int, sys.stdin.read().split()[:2])\nprint(add(a, b))\n",
+    "javascript": "const fs = require(\"fs\");\n\nfunction add(a, b) {\n  // Return sum\n}\n\nconst [a, b] = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\nconsole.log(add(a, b));\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    static int add(int a, int b) {\n        // Return sum\n        return 0;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(add(a, b));\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "7 13",
+      "expectedOutput": "20",
+      "description": "7 + 13 = 20"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "-4 9",
+      "expectedOutput": "5"
+    },
+    {
+      "id": "hid-2",
+      "input": "0 0",
+      "expectedOutput": "0"
+    }
+  ],
+  "levelId": "level-5"
+}

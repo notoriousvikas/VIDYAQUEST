@@ -16,6 +16,13 @@ const envSchema = z.object({
     .min(16)
     .default('vidyaquest-dev-secret-change-in-production'),
   JWT_EXPIRES_IN: z.string().default('7d'),
+  ONLINECOMPILER_API_KEY: z.string().optional(),
+  ONLINECOMPILER_API_URL: z
+    .string()
+    .url()
+    .default('https://api.onlinecompiler.io/api/run-code-sync/'),
+  GROQ_API_KEY: z.string().optional(),
+  GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -7,6 +7,7 @@ import {
   Atom,
   Award,
   Calendar,
+  Code2,
   Compass,
   Crown,
   FlaskConical,
@@ -64,6 +65,7 @@ const SUBJECT_OPTIONS: Array<{
   { key: 'physics', label: 'Physics', icon: Atom },
   { key: 'biology', label: 'Biology', icon: Leaf },
   { key: 'mathematics', label: 'Mathematics', icon: Sigma },
+  { key: 'coding', label: 'Coding', icon: Code2 },
 ];
 
 const PAGE_LIMIT = 20;
@@ -432,19 +434,14 @@ export default function StudentLeaderboardPage() {
                 {podiumOrder.map((entry) => {
                   const isFirst = entry.rank === 1;
                   const isSecond = entry.rank === 2;
-                  const borderStyle = isFirst
-                    ? 'border-amber-300 bg-gradient-to-b from-amber-500/20 via-slate-950 to-slate-950 shadow-2xl sm:py-7'
-                    : isSecond
-                      ? 'border-slate-300/60 bg-gradient-to-b from-slate-400/15 via-slate-950 to-slate-950'
-                      : 'border-amber-700/70 bg-gradient-to-b from-amber-700/15 via-slate-950 to-slate-950';
 
                   return (
                     <button
                       key={entry.studentId}
                       type="button"
                       onClick={() => void handleOpenStudentDetails(entry.studentId)}
-                      className={`relative flex flex-col items-center rounded-2xl border-2 p-5 text-center transition hover:scale-[1.01] ${borderStyle} ${
-                        isFirst ? 'order-first sm:order-none' : ''
+                      className={`relative flex flex-col items-center bg-transparent p-3 text-center transition hover:scale-[1.02] ${
+                        isFirst ? 'order-first sm:order-none sm:pb-6' : ''
                       }`}
                     >
                       <span

@@ -1,0 +1,54 @@
+{
+  "id": "l6-c3",
+  "order": 3,
+  "title": "Reverse an Array",
+  "difficulty": "Medium",
+  "xpReward": 30,
+  "topic": "Array manipulation",
+  "description": "Given `N` and `N` integers, print the array in reverse order separated by spaces.",
+  "instructions": [
+    "Read `N` and the `N` integers.",
+    "Reverse the array (using two pointers or reverse traversal) and print elements separated by spaces."
+  ],
+  "constraints": [
+    "1 <= N <= 1000"
+  ],
+  "examples": [
+    {
+      "input": "5\n1 2 3 4 5",
+      "output": "5 4 3 2 1"
+    }
+  ],
+  "hints": [
+    "Two-pointer approach: swap `arr[left]` and `arr[right]` while `left < right`.",
+    "Or iterate from `n - 1` down to `0` and join with spaces.",
+    "Make sure output is space-separated on one line."
+  ],
+  "starterCode": {
+    "python": "n = int(input().strip())\narr = list(map(int, input().split()))\n# Reverse and print space-separated\n",
+    "javascript": "const fs = require(\"fs\");\nconst tokens = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\nconst n = tokens[0];\nconst arr = tokens.slice(1, 1 + n);\n// Reverse and print space-separated\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();\n        // Reverse and print space-separated\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "5\n1 2 3 4 5",
+      "expectedOutput": "5 4 3 2 1",
+      "description": "Odd length"
+    },
+    {
+      "id": "pub-2",
+      "input": "4\n10 20 30 40",
+      "expectedOutput": "40 30 20 10",
+      "description": "Even length"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "1\n7",
+      "expectedOutput": "7"
+    }
+  ],
+  "levelId": "level-6"
+}

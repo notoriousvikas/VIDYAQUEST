@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion';
 import { Crosshair, Maximize2, Minus, Plus, RotateCcw } from 'lucide-react';
 import { LevelNode, LevelStatus, RegionInfo } from '@/types/worldMap';
+import type { MapLandmark } from '@/data/subjectMaps';
 import { LevelMarker } from './LevelMarker';
 import { MapBorderFrame, MapBorderVariant } from './MapBorderFrame';
 import { MapMinimap } from './MapMinimap';
@@ -35,6 +36,7 @@ export interface WorldMapTemplateProps {
   borderVariant?: MapBorderVariant;
   showBorderCompass?: boolean;
   regions: RegionInfo[];
+  landmarks?: MapLandmark[];
   levels: WorldMapLevelItem[];
   selectedLevelId?: string | null;
   onSelectLevel: (level: LevelNode, status: LevelStatus) => void;
@@ -85,6 +87,7 @@ export function WorldMapTemplate({
   borderVariant = 'classic-gold',
   showBorderCompass = true,
   regions,
+  landmarks = [],
   levels,
   selectedLevelId,
   onSelectLevel,
@@ -439,7 +442,6 @@ export function WorldMapTemplate({
           height={mapHeight}
           draggable={false}
           className="pointer-events-none h-full w-full rounded-xl object-cover"
-          style={{ imageRendering: 'pixelated' }}
         />
 
         {/* Cartography Border Frame Template */}
@@ -506,6 +508,21 @@ export function WorldMapTemplate({
                 {typeof region.completionPercentage === 'number' &&
                   ` · ${region.completionPercentage}%`}
               </p>
+            </div>
+          </div>
+        ))}
+
+        {/* World Landmarks */}
+        {landmarks.map((lm) => (
+          <div
+            key={lm.id}
+            style={{ left: `${lm.xPercent}%`, top: `${lm.yPercent}%` }}
+            title={`${lm.name}: ${lm.description}`}
+            className="group pointer-events-auto absolute z-10 -translate-x-1/2 -translate-y-1/2"
+          >
+            <div className="flex items-center gap-1 rounded-full border border-amber-300/60 bg-slate-950/75 px-2 py-0.5 text-[10px] font-bold text-amber-100 shadow-md backdrop-blur-[2px] transition group-hover:border-amber-300 group-hover:bg-slate-950">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
+              <span className="whitespace-nowrap">{lm.name}</span>
             </div>
           </div>
         ))}

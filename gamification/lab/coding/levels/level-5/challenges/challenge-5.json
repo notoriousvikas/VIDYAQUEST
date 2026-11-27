@@ -1,0 +1,71 @@
+{
+  "id": "l5-c5",
+  "order": 5,
+  "title": "Calculator Using Functions",
+  "difficulty": "Medium",
+  "xpReward": 30,
+  "topic": "Functions & Dispatch",
+  "description": "Read two non-negative integers `a`, `b` and an operator `op` (`+`, `-`, `*`, `/`) separated by spaces (e.g., `12 4 *`). Write separate functions for add, subtract, multiply, and integer division. For `/`, if `b == 0` print `Error`, otherwise print the integer quotient.",
+  "instructions": [
+    "Read `a`, `b`, and `op` from stdin.",
+    "Implement helper functions `add`, `sub`, `mul`, `div`.",
+    "For `/`, if `b == 0` print `Error`, otherwise print integer quotient `Math.trunc(a / b)` / `int(a / b)`."
+  ],
+  "constraints": [
+    "0 <= a, b <= 10000",
+    "op is one of +, -, *, /"
+  ],
+  "examples": [
+    {
+      "input": "12 4 *",
+      "output": "48"
+    },
+    {
+      "input": "10 0 /",
+      "output": "Error"
+    }
+  ],
+  "hints": [
+    "Create four small functions: `add(a, b)`, `sub(a, b)`, `mul(a, b)`, `div(a, b)`.",
+    "Check `b == 0` before dividing.",
+    "Use `if / else if` on `op` to call the right function."
+  ],
+  "starterCode": {
+    "python": "import sys\ntokens = sys.stdin.read().split()\na, b, op = int(tokens[0]), int(tokens[1]), tokens[2]\n\ndef add(x, y): return x + y\ndef sub(x, y): return x - y\ndef mul(x, y): return x * y\n\n# Implement div and dispatch based on op\n",
+    "javascript": "const fs = require(\"fs\");\nconst tokens = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/);\nconst a = parseInt(tokens[0], 10);\nconst b = parseInt(tokens[1], 10);\nconst op = tokens[2];\n\nconst add = (x, y) => x + y;\nconst sub = (x, y) => x - y;\nconst mul = (x, y) => x * y;\n\n// Implement div and dispatch based on op\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    static int add(int x, int y) { return x + y; }\n    static int sub(int x, int y) { return x - y; }\n    static int mul(int x, int y) { return x * y; }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        String op = sc.next();\n        // Dispatch based on op\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "12 4 *",
+      "expectedOutput": "48",
+      "description": "Multiplication"
+    },
+    {
+      "id": "pub-2",
+      "input": "15 4 /",
+      "expectedOutput": "3",
+      "description": "Integer division"
+    },
+    {
+      "id": "pub-3",
+      "input": "10 0 /",
+      "expectedOutput": "Error",
+      "description": "Division by zero"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "9 5 +",
+      "expectedOutput": "14"
+    },
+    {
+      "id": "hid-2",
+      "input": "20 7 -",
+      "expectedOutput": "13"
+    }
+  ],
+  "levelId": "level-5"
+}

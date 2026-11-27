@@ -19,7 +19,7 @@ const labManifestEntrySchema = z.object({
   difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced', 'Master']).default('Beginner'),
   estimatedDurationMinutes: z.number().int().min(1).default(10),
   enabled: z.boolean().default(true),
-  labFormat: z.enum(['html_3d', 'three_model', 'interactive_config']).default('html_3d'),
+  labFormat: z.enum(['html_3d', 'three_model', 'interactive_config', 'coding_ide']).default('html_3d'),
   entryAsset: z.string().min(1),
   instructions: z.array(z.string()).default([]),
   interactionConfig: z

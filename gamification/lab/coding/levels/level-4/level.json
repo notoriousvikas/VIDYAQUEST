@@ -1,0 +1,23 @@
+{
+  "levelId": "level-4",
+  "levelNumber": 4,
+  "missionSlug": "code-4",
+  "labId": "coding-level-4",
+  "title": "Loop Valley",
+  "subtitle": "For Loops, While Loops & Patterns",
+  "difficulty": "Intermediate",
+  "topics": [
+    "For loops",
+    "While loops",
+    "Break and continue",
+    "Nested loops"
+  ],
+  "completionBonusXp": 100,
+  "challengeIds": [
+    "l4-c1",
+    "l4-c2",
+    "l4-c3",
+    "l4-c4",
+    "l4-c5"
+  ]
+}

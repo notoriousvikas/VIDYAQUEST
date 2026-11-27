@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Atom,
+  Code2,
   Compass,
   FlaskConical,
   Globe2,
@@ -19,6 +20,7 @@ import {
   SIMULATOR_MAPS_BY_SUBJECT,
   SIMULATOR_SUBJECTS,
 } from '@/data/worldMapData';
+import { getSubjectMapConfig } from '@/data/subjectMaps';
 import { DEFAULT_MAP_TEMPLATE_CONFIG } from '@/data/worldMapTemplate';
 import {
   ApiError,
@@ -70,6 +72,8 @@ function renderSubjectIcon(icon: string) {
       return <Leaf className="h-3.5 w-3.5" />;
     case 'sigma':
       return <Sigma className="h-3.5 w-3.5" />;
+    case 'code-2':
+      return <Code2 className="h-3.5 w-3.5" />;
     default:
       return <Globe2 className="h-3.5 w-3.5" />;
   }
@@ -137,11 +141,16 @@ export function WorldMapCanvas({
     localMapsBySubject[activeSubjectSlug] ??
     localMapsBySubject.chemistry;
 
+  const subjectMapCfg = getSubjectMapConfig(activeSubjectSlug);
   const mapConfig = activeMapPayload.map.mapConfiguration;
-  const mapWidth = mapConfig.width ?? DEFAULT_MAP_TEMPLATE_CONFIG.width;
-  const mapHeight = mapConfig.height ?? DEFAULT_MAP_TEMPLATE_CONFIG.height;
-  const mapImageUrl = activeMapPayload.map.backgroundAsset ?? DEFAULT_MAP_IMAGE_URL;
-  const oceanColor = activeMapPayload.map.theme.oceanColor ?? '#1b5e7a';
+  const mapWidth = mapConfig.width ?? subjectMapCfg.dimensions.width ?? DEFAULT_MAP_TEMPLATE_CONFIG.width;
+  const mapHeight = mapConfig.height ?? subjectMapCfg.dimensions.height ?? DEFAULT_MAP_TEMPLATE_CONFIG.height;
+  const backendBg = activeMapPayload.map.backgroundAsset;
+  const mapImageUrl =
+    backendBg && backendBg !== DEFAULT_MAP_IMAGE_URL
+      ? backendBg
+      : subjectMapCfg.backgroundAsset;
+  const oceanColor = subjectMapCfg.oceanColor ?? activeMapPayload.map.theme.oceanColor ?? '#1b5e7a';
 
   const loadBackendSubjectMap = useCallback(
     async (subjectSlug: string) => {
@@ -201,28 +210,37 @@ export function WorldMapCanvas({
   }, [activeMapPayload]);
 
   const activeLevels: WorldMapLevelItem[] = useMemo(() => {
-    return activeMapPayload.missions.map((m) => ({
-      level: {
-        id: m.id,
-        levelNumber: m.sequence,
-        title: m.title,
-        regionId: m.locationId,
-        regionName: m.locationName,
-        description: m.description,
-        objectives: m.learningObjectives,
-        difficulty: m.difficulty,
-        missionType: m.missionType,
-        xpReward: m.xpReward,
-        xPercent: m.positionX,
-        yPercent: m.positionY,
-        prerequisites: m.prerequisites,
-        attempts: m.attempts,
-        bestScore: m.bestScore,
-      },
-      status: mapBackendStatus(m.status, activeMapPayload.progress.currentMissionId === m.id),
-      stars: m.stars,
-    }));
-  }, [activeMapPayload]);
+    const coordBySeq = new Map(
+      subjectMapCfg.levelCoordinates.map((c) => [c.sequence, c]),
+    );
+    const useConfigCoords =
+      !backendMap || activeMapPayload.map.backgroundAsset === DEFAULT_MAP_IMAGE_URL;
+
+    return activeMapPayload.missions.map((m) => {
+      const cfgCoord = coordBySeq.get(m.sequence);
+      return {
+        level: {
+          id: m.id,
+          levelNumber: m.sequence,
+          title: m.title,
+          regionId: m.locationId,
+          regionName: m.locationName,
+          description: m.description,
+          objectives: m.learningObjectives,
+          difficulty: m.difficulty,
+          missionType: m.missionType,
+          xpReward: m.xpReward,
+          xPercent: useConfigCoords && cfgCoord ? cfgCoord.xPercent : m.positionX,
+          yPercent: useConfigCoords && cfgCoord ? cfgCoord.yPercent : m.positionY,
+          prerequisites: m.prerequisites,
+          attempts: m.attempts,
+          bestScore: m.bestScore,
+        },
+        status: mapBackendStatus(m.status, activeMapPayload.progress.currentMissionId === m.id),
+        stars: m.stars,
+      };
+    });
+  }, [activeMapPayload, backendMap, subjectMapCfg]);
 
   const handleSelectLevel = useCallback(
     (level: LevelNode, status: LevelStatus) => {
@@ -618,7 +636,9 @@ export function WorldMapCanvas({
       defaultCenterX={mapConfig.defaultCenterX ?? DEFAULT_MAP_TEMPLATE_CONFIG.defaultCenterX}
       defaultCenterY={mapConfig.defaultCenterY ?? DEFAULT_MAP_TEMPLATE_CONFIG.defaultCenterY}
       oceanColor={oceanColor}
+      borderVariant={subjectMapCfg.borderVariant}
       regions={activeRegions}
+      landmarks={subjectMapCfg.landmarks}
       levels={activeLevels}
       selectedLevelId={selectedLevel?.level.id ?? null}
       onSelectLevel={handleSelectLevel}

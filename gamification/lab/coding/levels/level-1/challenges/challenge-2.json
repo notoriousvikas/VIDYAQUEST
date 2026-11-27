@@ -1,0 +1,49 @@
+{
+  "id": "l1-c2",
+  "order": 2,
+  "title": "Print Your Name",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Print statements",
+  "description": "Write a program that prints `My name is VidyaQuest Coder` to the console, with a comment above your print statement.",
+  "instructions": [
+    "Output the exact greeting line: My name is VidyaQuest Coder",
+    "Add a comment above your print statement explaining what the line does."
+  ],
+  "constraints": [
+    "No input required.",
+    "Output must match: My name is VidyaQuest Coder"
+  ],
+  "examples": [
+    {
+      "input": "",
+      "output": "My name is VidyaQuest Coder"
+    }
+  ],
+  "hints": [
+    "Comments start with # in Python and // in JavaScript and Java.",
+    "Print the exact string \"My name is VidyaQuest Coder\".",
+    "Ensure there are no extra spaces at the start or end of the string."
+  ],
+  "starterCode": {
+    "python": "# Display the coder name\nprint(\"\")\n",
+    "javascript": "// Display the coder name\nconsole.log(\"\");\n",
+    "java": "public class Main {\n    public static void main(String[] args) {\n        // Display the coder name\n        System.out.println(\"\");\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "",
+      "expectedOutput": "My name is VidyaQuest Coder",
+      "description": "Prints introduction line"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "",
+      "expectedOutput": "My name is VidyaQuest Coder"
+    }
+  ],
+  "levelId": "level-1"
+}

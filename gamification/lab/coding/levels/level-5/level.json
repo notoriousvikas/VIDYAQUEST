@@ -1,0 +1,24 @@
+{
+  "levelId": "level-5",
+  "levelNumber": 5,
+  "missionSlug": "code-5",
+  "labId": "coding-level-5",
+  "title": "Function Castle",
+  "subtitle": "Functions, Parameters, Return Values & Scope",
+  "difficulty": "Intermediate",
+  "topics": [
+    "Functions",
+    "Parameters",
+    "Return values",
+    "Scope",
+    "Reusable code"
+  ],
+  "completionBonusXp": 100,
+  "challengeIds": [
+    "l5-c1",
+    "l5-c2",
+    "l5-c3",
+    "l5-c4",
+    "l5-c5"
+  ]
+}

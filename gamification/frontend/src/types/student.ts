@@ -224,7 +224,7 @@ export interface StudentDashboardData {
 
 export type LeaderboardType = 'global' | 'school' | 'class' | 'subject';
 export type LeaderboardPeriod = 'all-time' | 'weekly' | 'monthly';
-export type LeaderboardSubjectSlug = 'chemistry' | 'physics' | 'biology' | 'mathematics';
+export type LeaderboardSubjectSlug = 'chemistry' | 'physics' | 'biology' | 'mathematics' | 'coding';
 
 export interface LeaderboardEntry {
   rank: number;

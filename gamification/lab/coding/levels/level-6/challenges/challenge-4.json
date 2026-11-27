@@ -1,0 +1,64 @@
+{
+  "id": "l6-c4",
+  "order": 4,
+  "title": "Count Vowels in a String",
+  "difficulty": "Medium",
+  "xpReward": 30,
+  "topic": "Strings",
+  "description": "Read a line of text and count how many vowels (`a, e, i, o, u`, case-insensitive) it contains.",
+  "instructions": [
+    "Read the entire line from stdin.",
+    "Count both uppercase (`A, E, I, O, U`) and lowercase (`a, e, i, o, u`) vowels.",
+    "Print the integer count."
+  ],
+  "constraints": [
+    "1 <= length <= 1000"
+  ],
+  "examples": [
+    {
+      "input": "VidyaQuest",
+      "output": "4"
+    },
+    {
+      "input": "AEIOU xyz",
+      "output": "5"
+    }
+  ],
+  "hints": [
+    "Convert the string to lowercase first to simplify checking.",
+    "Check if each character is in `\"aeiou\"`.",
+    "Print the total count."
+  ],
+  "starterCode": {
+    "python": "s = input()\n# Count vowels and print\n",
+    "javascript": "const fs = require(\"fs\");\nconst s = fs.readFileSync(0, \"utf8\").replace(/\\r?\\n$/, \"\");\n// Count vowels and print\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.nextLine();\n        // Count vowels and print\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "VidyaQuest",
+      "expectedOutput": "4",
+      "description": "Mixed case word"
+    },
+    {
+      "id": "pub-2",
+      "input": "AEIOU xyz",
+      "expectedOutput": "5",
+      "description": "Uppercase vowels"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "rhythm",
+      "expectedOutput": "0"
+    },
+    {
+      "id": "hid-2",
+      "input": "Hello World",
+      "expectedOutput": "3"
+    }
+  ],
+  "levelId": "level-6"
+}

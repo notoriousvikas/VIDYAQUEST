@@ -1,0 +1,63 @@
+{
+  "id": "l1-c5",
+  "order": 5,
+  "title": "Read and Display Name",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Basic input/output",
+  "description": "Read a student’s name from standard input (one line) and print `Hello, <name>!`.",
+  "instructions": [
+    "Read a single line of text from stdin.",
+    "Trim any trailing newline/spaces and print `Hello, <name>!`."
+  ],
+  "constraints": [
+    "Input is a single non-empty line containing a name (1 to 50 chars)."
+  ],
+  "examples": [
+    {
+      "input": "Aarav",
+      "output": "Hello, Aarav!"
+    },
+    {
+      "input": "Diya",
+      "output": "Hello, Diya!"
+    }
+  ],
+  "hints": [
+    "Python: name = input().strip()",
+    "JavaScript: const fs = require(\"fs\"); const name = fs.readFileSync(0, \"utf8\").trim();",
+    "Java: Scanner sc = new Scanner(System.in); String name = sc.nextLine().trim();"
+  ],
+  "starterCode": {
+    "python": "name = input().strip()\n# Print greeting\n",
+    "javascript": "const fs = require(\"fs\");\nconst name = fs.readFileSync(0, \"utf8\").trim();\n// Print greeting\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String name = sc.nextLine().trim();\n        // Print greeting\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "Aarav",
+      "expectedOutput": "Hello, Aarav!",
+      "description": "Greets Aarav"
+    },
+    {
+      "id": "pub-2",
+      "input": "Diya",
+      "expectedOutput": "Hello, Diya!",
+      "description": "Greets Diya"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "Rohan",
+      "expectedOutput": "Hello, Rohan!"
+    },
+    {
+      "id": "hid-2",
+      "input": "Vidya Explorer",
+      "expectedOutput": "Hello, Vidya Explorer!"
+    }
+  ],
+  "levelId": "level-1"
+}

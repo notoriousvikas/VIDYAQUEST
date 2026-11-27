@@ -5,6 +5,7 @@ import { env } from './config/env';
 import { errorHandler } from './middleware/errorHandler';
 import { assessmentRouter } from './modules/assessment';
 import { catalogRouter } from './modules/catalog';
+import { codingRouter } from './modules/coding';
 import {
   adminMapRoutes,
   gamificationRouter,
@@ -32,6 +33,8 @@ export function createApp() {
   app.use('/api/v1/users', usersRouter);
   app.use('/api/v1/catalog', catalogRouter);
   app.use('/api/v1/labs', labsRouter);
+  app.use('/api/v1/coding', codingRouter);
+  app.use('/api/coding', codingRouter);
   app.use('/api/v1/progress', progressRouter);
   app.use('/api/v1/assessment', assessmentRouter);
   app.use('/api/v1/gamification', gamificationRouter);

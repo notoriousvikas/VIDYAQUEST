@@ -1,0 +1,49 @@
+{
+  "id": "l1-c3",
+  "order": 3,
+  "title": "Print Multiple Lines",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Basic syntax",
+  "description": "Write a program that prints three lines:\nLine 1: `Welcome to VidyaQuest`\nLine 2: `Code Citadel`\nLine 3: `Level 1`",
+  "instructions": [
+    "Print each phrase on its own separate line.",
+    "You can use three print statements or newline characters (\\n)."
+  ],
+  "constraints": [
+    "Exact 3 lines of output.",
+    "Case-sensitive match required."
+  ],
+  "examples": [
+    {
+      "input": "",
+      "output": "Welcome to VidyaQuest\nCode Citadel\nLevel 1"
+    }
+  ],
+  "hints": [
+    "Each print() / console.log() / System.out.println() call automatically adds a newline.",
+    "Call the print function three times in order.",
+    "Double-check spelling: \"Welcome to VidyaQuest\", \"Code Citadel\", \"Level 1\"."
+  ],
+  "starterCode": {
+    "python": "# Print three lines\n",
+    "javascript": "// Print three lines\n",
+    "java": "public class Main {\n    public static void main(String[] args) {\n        // Print three lines\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "",
+      "expectedOutput": "Welcome to VidyaQuest\nCode Citadel\nLevel 1",
+      "description": "Prints all 3 lines in order"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "",
+      "expectedOutput": "Welcome to VidyaQuest\nCode Citadel\nLevel 1"
+    }
+  ],
+  "levelId": "level-1"
+}

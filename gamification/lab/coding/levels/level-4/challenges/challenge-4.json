@@ -1,0 +1,64 @@
+{
+  "id": "l4-c4",
+  "order": 4,
+  "title": "Calculate Factorial",
+  "difficulty": "Medium",
+  "xpReward": 30,
+  "topic": "Loops & Accumulation",
+  "description": "Read a non-negative integer `n` (`0 <= n <= 20`) and print `n!` (the factorial of `n`). Remember `0! = 1`.",
+  "instructions": [
+    "Initialize `fact = 1`.",
+    "Multiply `fact` by each integer from `2` to `n`.",
+    "Print `fact`."
+  ],
+  "constraints": [
+    "0 <= n <= 20"
+  ],
+  "examples": [
+    {
+      "input": "5",
+      "output": "120"
+    },
+    {
+      "input": "0",
+      "output": "1"
+    }
+  ],
+  "hints": [
+    "In Java, `20!` fits in a `long` (`2432902008176640000`), not an `int`.",
+    "When `n = 0`, the loop from `2` to `0` does not run, so `fact` stays `1`.",
+    "Print `fact`."
+  ],
+  "starterCode": {
+    "python": "n = int(input().strip())\n# Compute and print n!\n",
+    "javascript": "const fs = require(\"fs\");\nconst n = parseInt(fs.readFileSync(0, \"utf8\").trim(), 10);\n// Compute and print n!\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Compute and print n! using long\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "5",
+      "expectedOutput": "120",
+      "description": "5! = 120"
+    },
+    {
+      "id": "pub-2",
+      "input": "0",
+      "expectedOutput": "1",
+      "description": "0! = 1"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "1",
+      "expectedOutput": "1"
+    },
+    {
+      "id": "hid-2",
+      "input": "10",
+      "expectedOutput": "3628800"
+    }
+  ],
+  "levelId": "level-4"
+}

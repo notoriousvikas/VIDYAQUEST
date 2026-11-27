@@ -190,6 +190,231 @@
           }
         ]
       }
+    },
+    {
+      "labId": "coding-level-1",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-1"],
+      "title": "First Steps Coding Lab",
+      "description": "Write and execute your first programs using print statements, comments, and basic input/output.",
+      "difficulty": "Beginner",
+      "estimatedDurationMinutes": 20,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-1/level.json",
+      "instructions": [
+        "Select a programming language (Python, JavaScript, or Java).",
+        "Complete all 5 First Steps coding challenges.",
+        "Run your code with sample or custom input, then submit to pass all test cases."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-2",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-2"],
+      "title": "Variable Village Coding Lab",
+      "description": "Practice variables, integers, floats, strings, and type conversions across 5 challenges.",
+      "difficulty": "Beginner",
+      "estimatedDurationMinutes": 25,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-2/level.json",
+      "instructions": [
+        "Declare variables of appropriate data types and convert inputs cleanly.",
+        "Complete all 5 Variable Village coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-3",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-3"],
+      "title": "Logic Forest Coding Lab",
+      "description": "Master arithmetic, comparison, logical operators, and nested if/else branching.",
+      "difficulty": "Intermediate",
+      "estimatedDurationMinutes": 30,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-3/level.json",
+      "instructions": [
+        "Use conditional branching and logical operators to handle all edge cases.",
+        "Complete all 5 Logic Forest coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-4",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-4"],
+      "title": "Loop Valley Coding Lab",
+      "description": "Build iterative solutions with for loops, while loops, break/continue, and nested loops.",
+      "difficulty": "Intermediate",
+      "estimatedDurationMinutes": 30,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-4/level.json",
+      "instructions": [
+        "Use loops to repeat computations and generate structured outputs.",
+        "Complete all 5 Loop Valley coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-5",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-5"],
+      "title": "Function Castle Coding Lab",
+      "description": "Structure reusable code with functions, parameters, return values, and clean scope.",
+      "difficulty": "Intermediate",
+      "estimatedDurationMinutes": 35,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-5/level.json",
+      "instructions": [
+        "Decompose problems into focused, reusable functions.",
+        "Complete all 5 Function Castle coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-6",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-6"],
+      "title": "Array Kingdom Coding Lab",
+      "description": "Traverse and manipulate arrays and strings to solve searching and aggregation tasks.",
+      "difficulty": "Advanced",
+      "estimatedDurationMinutes": 35,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-6/level.json",
+      "instructions": [
+        "Iterate over arrays and strings carefully while handling boundary cases.",
+        "Complete all 5 Array Kingdom coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-7",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-7"],
+      "title": "Algorithm Mountain Coding Lab",
+      "description": "Implement linear search, binary search, sorting algorithms, and recursion.",
+      "difficulty": "Advanced",
+      "estimatedDurationMinutes": 40,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-7/level.json",
+      "instructions": [
+        "Implement classic searching, sorting, and recursive algorithms.",
+        "Complete all 5 Algorithm Mountain coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-8",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-8"],
+      "title": "Master Arena Coding Lab",
+      "description": "Conquer mixed DSA challenges combining arrays, strings, functions, searching, and sorting.",
+      "difficulty": "Master",
+      "estimatedDurationMinutes": 45,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-8/level.json",
+      "instructions": [
+        "Solve all 5 Master Arena DSA challenges cleanly and efficiently.",
+        "Pass every public and hidden test case to conquer Code Citadel."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
     }
   ]
 }

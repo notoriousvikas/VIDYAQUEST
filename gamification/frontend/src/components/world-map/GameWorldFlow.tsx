@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Atom,
+  Code2,
   Compass,
   FlaskConical,
   Globe2,
@@ -75,6 +76,12 @@ const SUBJECT_CARD_STYLES: Record<
     badge: 'bg-amber-500/20 text-amber-200 border-amber-400/50',
     button: 'from-amber-300 to-amber-500 border-amber-100 text-slate-950',
   },
+  coding: {
+    border: 'border-cyan-400/70 hover:border-cyan-300',
+    glow: 'from-cyan-500/20 via-slate-950/90 to-slate-950',
+    badge: 'bg-cyan-500/20 text-cyan-200 border-cyan-400/50',
+    button: 'from-cyan-300 to-cyan-500 border-cyan-100 text-slate-950',
+  },
 };
 
 function renderSubjectIcon(icon: string, className = 'h-6 w-6') {
@@ -87,6 +94,8 @@ function renderSubjectIcon(icon: string, className = 'h-6 w-6') {
       return <Leaf className={className} />;
     case 'sigma':
       return <Sigma className={className} />;
+    case 'code-2':
+      return <Code2 className={className} />;
     default:
       return <Globe2 className={className} />;
   }

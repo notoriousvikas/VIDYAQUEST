@@ -1,0 +1,73 @@
+{
+  "id": "l3-c4",
+  "order": 4,
+  "title": "Positive, Negative, or Zero",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "If/else",
+  "description": "Read an integer `n` and print `Positive` if `n > 0`, `Negative` if `n < 0`, or `Zero` if `n == 0`.",
+  "instructions": [
+    "Check all three conditions cleanly.",
+    "Print `Positive`, `Negative`, or `Zero`."
+  ],
+  "constraints": [
+    "-10^9 <= n <= 10^9"
+  ],
+  "examples": [
+    {
+      "input": "15",
+      "output": "Positive"
+    },
+    {
+      "input": "-4",
+      "output": "Negative"
+    },
+    {
+      "input": "0",
+      "output": "Zero"
+    }
+  ],
+  "hints": [
+    "Use an `if / elif / else` (or `else if`) chain.",
+    "Check `n > 0`, then `n < 0`, otherwise `Zero`.",
+    "Verify exact spelling and capitalization."
+  ],
+  "starterCode": {
+    "python": "n = int(input().strip())\n# Print Positive, Negative, or Zero\n",
+    "javascript": "const fs = require(\"fs\");\nconst n = parseInt(fs.readFileSync(0, \"utf8\").trim(), 10);\n// Print Positive, Negative, or Zero\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Print Positive, Negative, or Zero\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "15",
+      "expectedOutput": "Positive",
+      "description": "Positive"
+    },
+    {
+      "id": "pub-2",
+      "input": "-4",
+      "expectedOutput": "Negative",
+      "description": "Negative"
+    },
+    {
+      "id": "pub-3",
+      "input": "0",
+      "expectedOutput": "Zero",
+      "description": "Zero"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "1",
+      "expectedOutput": "Positive"
+    },
+    {
+      "id": "hid-2",
+      "input": "-999",
+      "expectedOutput": "Negative"
+    }
+  ],
+  "levelId": "level-3"
+}

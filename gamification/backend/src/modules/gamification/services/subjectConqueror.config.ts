@@ -71,6 +71,17 @@ export const SUBJECT_CONQUEROR_CONFIGS: Record<string, SubjectConquerorConfig> =
     rewardItemKeys: ['headwear-crown-cyber', 'backpack-digital', 'aura-code'],
     accentColor: '#06b6d4',
   },
+  coding: {
+    subjectSlug: 'coding',
+    subjectName: 'Coding',
+    kingdomName: 'Code Citadel',
+    conquerorTitle: 'Code Master',
+    achievementCode: 'CONQUEROR_CODING',
+    xpBonus: 300,
+    crownItemKey: 'headwear-crown-cyber',
+    rewardItemKeys: ['headwear-crown-cyber', 'backpack-digital', 'aura-code'],
+    accentColor: '#06b6d4',
+  },
   english: {
     subjectSlug: 'english',
     subjectName: 'English',

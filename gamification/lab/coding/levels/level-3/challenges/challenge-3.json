@@ -1,0 +1,63 @@
+{
+  "id": "l3-c3",
+  "order": 3,
+  "title": "Largest of Three Numbers",
+  "difficulty": "Medium",
+  "xpReward": 30,
+  "topic": "Logical operators & Nested conditions",
+  "description": "Read three integers `a`, `b`, and `c` and print the largest among them.",
+  "instructions": [
+    "Use `if / else if / else` with logical operators (`and`/`&&`) or nested conditions.",
+    "Print the maximum of the three integers."
+  ],
+  "constraints": [
+    "-10^9 <= a, b, c <= 10^9"
+  ],
+  "examples": [
+    {
+      "input": "12 45 27",
+      "output": "45"
+    },
+    {
+      "input": "9 9 3",
+      "output": "9"
+    }
+  ],
+  "hints": [
+    "Use `>=` instead of `>` when comparing so ties are handled properly.",
+    "If `a >= b` and `a >= c`, `a` is the largest.",
+    "Otherwise compare `b` and `c`."
+  ],
+  "starterCode": {
+    "python": "import sys\na, b, c = map(int, sys.stdin.read().split()[:3])\n# Find and print largest\n",
+    "javascript": "const fs = require(\"fs\");\nconst [a, b, c] = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\n// Find and print largest\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        int c = sc.nextInt();\n        // Find and print largest\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "12 45 27",
+      "expectedOutput": "45",
+      "description": "Distinct integers"
+    },
+    {
+      "id": "pub-2",
+      "input": "9 9 3",
+      "expectedOutput": "9",
+      "description": "With ties"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "-10 -5 -20",
+      "expectedOutput": "-5"
+    },
+    {
+      "id": "hid-2",
+      "input": "7 7 7",
+      "expectedOutput": "7"
+    }
+  ],
+  "levelId": "level-3"
+}

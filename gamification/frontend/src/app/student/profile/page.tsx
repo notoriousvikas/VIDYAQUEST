@@ -11,7 +11,6 @@ import {
   Palette,
   Save,
   School,
-  ScrollText,
   Settings,
   ShieldCheck,
   Sliders,
@@ -30,7 +29,6 @@ import {
 } from '@/lib/apiClient';
 import {
   StudentAchievementItem,
-  StudentActivityItem,
   StudentAvatarState,
   StudentDashboardData,
   StudentProfile,
@@ -156,7 +154,6 @@ export default function StudentProfilePage() {
   const subjectProgress: SubjectProgressCard[] = dashData?.subjectProgress ?? [];
   const achievements: StudentAchievementItem[] = dashData?.achievements ?? [];
   const unlockedAchievements = achievements.filter((a) => a.unlocked);
-  const recentActivity: StudentActivityItem[] = dashData?.recentActivity ?? [];
 
   return (
     <StudentNavShell
@@ -423,45 +420,6 @@ export default function StudentProfilePage() {
                         </div>
                       ))}
                     </div>
-                  )}
-                </section>
-
-                {/* Learning Journey Log */}
-                <section className="vq-parchment rounded-2xl p-5">
-                  <div className="mb-3 flex items-center justify-between border-b border-[#B89D68]/60 pb-2">
-                    <div className="flex items-center gap-2">
-                      <ScrollText className="h-4 w-4 text-[#7C5818]" />
-                      <h3 className="text-sm font-black uppercase tracking-wider text-[#3B2A0C]">
-                        Learning Journey
-                      </h3>
-                    </div>
-                    {stats && (
-                      <span className="text-xs font-bold text-[#5C4620]">
-                        {stats.completedExperiments} Labs · Best Streak {stats.longestStreakDays}d
-                      </span>
-                    )}
-                  </div>
-
-                  {recentActivity.length === 0 ? (
-                    <p className="text-xs font-semibold text-[#4A3714]">
-                      Your adventure log will record quests, experiments, and rewards here.
-                    </p>
-                  ) : (
-                    <ul className="space-y-2">
-                      {recentActivity.slice(0, 5).map((item) => (
-                        <li
-                          key={item.id}
-                          className="flex items-center justify-between gap-3 rounded-lg border border-[#B89D68]/70 bg-[#F5EEDB] px-3 py-2 text-xs"
-                        >
-                          <span className="font-bold text-[#1C1914]">{item.description}</span>
-                          {item.xpDelta !== null && item.xpDelta > 0 && (
-                            <span className="shrink-0 rounded bg-[#071426] px-2 py-0.5 text-[10px] font-black text-[#F5B900]">
-                              +{item.xpDelta} XP
-                            </span>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
                   )}
                 </section>
               </div>

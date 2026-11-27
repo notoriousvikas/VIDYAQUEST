@@ -1,0 +1,79 @@
+{
+  "id": "l3-c5",
+  "order": 5,
+  "title": "Simple Grading System",
+  "difficulty": "Medium",
+  "xpReward": 30,
+  "topic": "Nested conditions",
+  "description": "Given a student score (0–100), print their grade:\n- 90 to 100: `A`\n- 80 to 89: `B`\n- 70 to 79: `C`\n- 60 to 69: `D`\n- Below 60: `F`\nIf score is `< 0` or `> 100`, print `Invalid`.",
+  "instructions": [
+    "Read an integer `score` from stdin.",
+    "Validate that `0 <= score <= 100`; otherwise print `Invalid`.",
+    "Print the corresponding letter grade."
+  ],
+  "constraints": [
+    "-1000 <= score <= 1000"
+  ],
+  "examples": [
+    {
+      "input": "92",
+      "output": "A"
+    },
+    {
+      "input": "75",
+      "output": "C"
+    },
+    {
+      "input": "105",
+      "output": "Invalid"
+    }
+  ],
+  "hints": [
+    "Check for invalid range (`score < 0 || score > 100`) first.",
+    "Then check thresholds from highest (`>= 90`) down to `>= 60`.",
+    "Boundary values like 90, 80, 70, 60 belong to A, B, C, D respectively."
+  ],
+  "starterCode": {
+    "python": "score = int(input().strip())\n# Print grade or Invalid\n",
+    "javascript": "const fs = require(\"fs\");\nconst score = parseInt(fs.readFileSync(0, \"utf8\").trim(), 10);\n// Print grade or Invalid\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int score = sc.nextInt();\n        // Print grade or Invalid\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "92",
+      "expectedOutput": "A",
+      "description": "Grade A"
+    },
+    {
+      "id": "pub-2",
+      "input": "75",
+      "expectedOutput": "C",
+      "description": "Grade C"
+    },
+    {
+      "id": "pub-3",
+      "input": "105",
+      "expectedOutput": "Invalid",
+      "description": "Out of range"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "90",
+      "expectedOutput": "A"
+    },
+    {
+      "id": "hid-2",
+      "input": "59",
+      "expectedOutput": "F"
+    },
+    {
+      "id": "hid-3",
+      "input": "-1",
+      "expectedOutput": "Invalid"
+    }
+  ],
+  "levelId": "level-3"
+}

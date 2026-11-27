@@ -1,0 +1,25 @@
+{
+  "levelId": "level-2",
+  "levelNumber": 2,
+  "missionSlug": "code-2",
+  "labId": "coding-level-2",
+  "title": "Variable Village",
+  "subtitle": "Variables, Data Types & Type Conversion",
+  "difficulty": "Beginner",
+  "topics": [
+    "Variables",
+    "Data types",
+    "Integers",
+    "Strings",
+    "Floats",
+    "Type conversion"
+  ],
+  "completionBonusXp": 100,
+  "challengeIds": [
+    "l2-c1",
+    "l2-c2",
+    "l2-c3",
+    "l2-c4",
+    "l2-c5"
+  ]
+}

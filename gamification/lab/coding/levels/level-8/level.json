@@ -1,0 +1,24 @@
+{
+  "levelId": "level-8",
+  "levelNumber": 8,
+  "missionSlug": "code-8",
+  "labId": "coding-level-8",
+  "title": "Master Arena",
+  "subtitle": "Mixed DSA & Problem Solving",
+  "difficulty": "Master",
+  "topics": [
+    "Mixed problem-solving",
+    "Arrays and strings",
+    "Functions",
+    "Searching and sorting",
+    "Basic DSA"
+  ],
+  "completionBonusXp": 100,
+  "challengeIds": [
+    "l8-c1",
+    "l8-c2",
+    "l8-c3",
+    "l8-c4",
+    "l8-c5"
+  ]
+}

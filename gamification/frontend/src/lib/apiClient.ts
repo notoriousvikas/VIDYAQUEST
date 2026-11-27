@@ -371,4 +371,67 @@ export const apiClient = {
       },
     );
   },
+
+  getCodingLevels() {
+    return apiFetch<import('@/types/coding').CodingLevel[]>('/coding/levels');
+  },
+
+  getCodingLevel(levelId: string) {
+    return apiFetch<import('@/types/coding').CodingLevelWithChallenges>(
+      `/coding/levels/${encodeURIComponent(levelId)}`,
+    );
+  },
+
+  getCodingChallenge(challengeId: string) {
+    return apiFetch<import('@/types/coding').PublicCodingChallenge>(
+      `/coding/challenges/${encodeURIComponent(challengeId)}`,
+    );
+  },
+
+  getCodingProgress() {
+    return apiFetch<import('@/types/coding').CodingLevelProgress[]>('/coding/progress');
+  },
+
+  getCodingLevelProgress(levelId: string) {
+    return apiFetch<import('@/types/coding').CodingLevelProgress>(
+      `/coding/progress/${encodeURIComponent(levelId)}`,
+    );
+  },
+
+  runCodingCode(input: {
+    challengeId: string;
+    language: import('@/types/coding').CodingLanguage;
+    code: string;
+    customInput?: string;
+  }) {
+    return apiFetch<import('@/types/coding').CodingRunResult>('/coding/run', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
+
+  submitCodingSolution(input: {
+    challengeId: string;
+    language: import('@/types/coding').CodingLanguage;
+    code: string;
+  }) {
+    return apiFetch<import('@/types/coding').CodingSubmitResult>('/coding/submit', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
+
+  requestCodingHint(input: {
+    challengeId: string;
+    language: import('@/types/coding').CodingLanguage;
+    code: string;
+    hintLevel: 1 | 2 | 3;
+    errorOutput?: string;
+    question?: string;
+  }) {
+    return apiFetch<import('@/types/coding').CodingHintResult>('/coding/hint', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
 };

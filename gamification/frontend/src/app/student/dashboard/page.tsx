@@ -438,68 +438,68 @@ export default function StudentDashboardPage() {
 
           {/* RIGHT COLUMN: Quest Board, Rewards & Continue Adventure */}
           <div className="flex flex-col justify-between gap-4 lg:col-span-4">
-            {/* Parchment Quest Board */}
-            <div className="vq-parchment rounded-xl p-4">
-              <div className="flex items-center justify-between border-b border-[#B89D68]/60 pb-2">
+            {/* Quest Board */}
+            <div className="vq-panel rounded-xl p-4">
+              <div className="flex items-center justify-between border-b border-[#233B59] pb-2">
                 <div className="flex items-center gap-2">
-                  <ScrollText className="h-4 w-4 text-[#7C5818]" />
-                  <h2 className="text-xs font-black uppercase tracking-wider text-[#3B2A0C]">
+                  <ScrollText className="h-4 w-4 text-[#F5B900]" />
+                  <h2 className="text-[11px] font-black uppercase tracking-wider text-[#E9DFC7]">
                     Quest Board
                   </h2>
                 </div>
-                <span className="rounded bg-[#3B2A0C] px-2 py-0.5 text-[10px] font-black text-[#F5B900]">
+                <span className="rounded border border-[#F5B900]/40 bg-[#F5B900]/15 px-2 py-0.5 text-[10px] font-black text-[#F5B900]">
                   {statistics.completedMissions}/{statistics.totalMissions} Cleared
                 </span>
               </div>
 
               {/* Next Objective */}
               <div className="mt-3">
-                <p className="text-[10px] font-black uppercase tracking-wider text-[#6E5324]">
+                <p className="text-[10px] font-black uppercase tracking-wider text-[#E9DFC7]/60">
                   {continueAdventure.inProgressMission
                     ? 'In Progress'
                     : 'Next Objective'}
                 </p>
                 {nextQuest ? (
-                  <div className="mt-1 rounded-lg border border-[#B89D68] bg-[#F5EEDB] p-3">
+                  <div className="mt-1.5 rounded-lg border border-[#233B59] bg-[#071426]/80 p-3">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="text-sm font-black text-[#1C1914]">
+                        <p className="text-sm font-black text-[#F3EFE6]">
                           {nextQuest.title}
                         </p>
-                        <p className="mt-0.5 flex items-center gap-1 text-[11px] font-bold text-[#5C4620]">
-                          <MapPin className="h-3 w-3" />
+                        <p className="mt-0.5 flex items-center gap-1 text-[11px] font-bold text-[#9FB3C8]">
+                          <MapPin className="h-3 w-3 text-[#F5B900]" />
                           {nextQuest.subjectName} · {nextQuest.mapName}
                         </p>
                       </div>
-                      <span className="shrink-0 rounded bg-[#071426] px-2 py-0.5 text-[10px] font-black text-[#F5B900]">
+                      <span className="shrink-0 rounded border border-[#F5B900]/40 bg-[#2D2100] px-2 py-0.5 text-[10px] font-black text-[#F5B900]">
                         +{nextQuest.xpReward} XP
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <p className="mt-1 text-xs font-bold text-[#3B2A0C]">
+                  <p className="mt-1 text-xs font-bold text-[#9FB3C8]">
                     Explore the World Map to pick your next quest!
                   </p>
                 )}
               </div>
 
               {/* Daily Quest */}
-              <div className="mt-3 rounded-lg border border-[#B89D68]/80 bg-[#E0D4B7] p-3">
-                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-[#4A3714]">
+              <div className="mt-3 rounded-lg border border-[#233B59] bg-[#071426]/80 p-3">
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-[#E9DFC7]/70">
                   <span>Daily Bounty</span>
-                  <span className="text-[#7C5818]">+{dailyQuest.xpReward} XP</span>
+                  <span className="text-[#F5B900]">+{dailyQuest.xpReward} XP</span>
                 </div>
-                <p className="mt-1 text-xs font-extrabold text-[#1C1914]">
+                <p className="mt-1 text-xs font-extrabold text-[#F3EFE6]">
                   {dailyQuest.title}
                 </p>
                 <div className="mt-2 flex items-center gap-2">
-                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-[#C7B792]">
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-[#13263E]">
                     <div
-                      className="h-full bg-[#228B5B] transition-all duration-500"
+                      className="h-full bg-emerald-400 transition-all duration-500"
                       style={{ width: `${dailyPct}%` }}
                     />
                   </div>
-                  <span className="text-[10px] font-black text-[#3B2A0C]">
+                  <span className="text-[10px] font-black text-[#E9DFC7]/80">
                     {dailyQuest.completed
                       ? 'Done!'
                       : `${dailyQuest.currentCount}/${dailyQuest.targetCount}`}

@@ -1,7 +1,7 @@
 import { ConquerorEventPayload, UnlockedClothingReward } from './student';
 import { SubjectMapResponse } from './worldMap';
 
-export type LabFormat = 'html_3d' | 'three_model' | 'interactive_config';
+export type LabFormat = 'html_3d' | 'three_model' | 'interactive_config' | 'coding_ide';
 
 export interface LabVerificationQuestion {
   id: string;
