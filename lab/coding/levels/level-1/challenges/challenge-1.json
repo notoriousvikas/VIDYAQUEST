@@ -1,0 +1,50 @@
+{
+  "id": "l1-c1",
+  "order": 1,
+  "title": "Print Hello World",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Hello World",
+  "description": "Write a program that prints the exact text `Hello, World!` to the console.",
+  "instructions": [
+    "Use your language’s standard print/output statement.",
+    "Match the capitalization, comma, and exclamation mark exactly: Hello, World!"
+  ],
+  "constraints": [
+    "No input is required.",
+    "Output must be exactly one line: Hello, World!"
+  ],
+  "examples": [
+    {
+      "input": "",
+      "output": "Hello, World!",
+      "explanation": "Prints the classic greeting."
+    }
+  ],
+  "hints": [
+    "In Python use print(...), in JavaScript use console.log(...), and in Java use System.out.println(...).",
+    "Wrap the text in quotes as a string literal.",
+    "Check spelling and punctuation: \"Hello, World!\""
+  ],
+  "starterCode": {
+    "python": "# Print Hello, World! below\nprint(\"Hello, World!\")\n",
+    "javascript": "// Print Hello, World! below\nconsole.log(\"Hello, World!\");\n",
+    "java": "public class Main {\n    public static void main(String[] args) {\n        // Print Hello, World! below\n        System.out.println(\"Hello, World!\");\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "",
+      "expectedOutput": "Hello, World!",
+      "description": "Standard greeting output"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "",
+      "expectedOutput": "Hello, World!"
+    }
+  ],
+  "levelId": "level-1"
+}

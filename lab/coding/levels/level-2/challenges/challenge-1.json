@@ -1,0 +1,54 @@
+{
+  "id": "l2-c1",
+  "order": 1,
+  "title": "Store and Display Student Details",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Variables & Data types",
+  "description": "Read a student name (line 1), age as an integer (line 2), and grade/class as an integer (line 3) from input. Print:\n`Name: <name>, Age: <age>, Grade: <grade>`",
+  "instructions": [
+    "Read 3 lines from standard input: name (string), age (int), grade (int).",
+    "Format the output on a single line exactly as shown."
+  ],
+  "constraints": [
+    "1 <= age <= 100",
+    "1 <= grade <= 12"
+  ],
+  "examples": [
+    {
+      "input": "Maya\n14\n9",
+      "output": "Name: Maya, Age: 14, Grade: 9"
+    }
+  ],
+  "hints": [
+    "Read all lines from stdin and parse age and grade as integers.",
+    "Use string interpolation or concatenation to format commas and spaces exactly.",
+    "Check format: `Name: <name>, Age: <age>, Grade: <grade>`."
+  ],
+  "starterCode": {
+    "python": "name = input().strip()\nage = int(input().strip())\ngrade = int(input().strip())\n# Print formatted student details\n",
+    "javascript": "const fs = require(\"fs\");\nconst lines = fs.readFileSync(0, \"utf8\").trim().split(/\\r?\\n/);\nconst name = lines[0].trim();\nconst age = parseInt(lines[1], 10);\nconst grade = parseInt(lines[2], 10);\n// Print formatted student details\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String name = sc.nextLine().trim();\n        int age = Integer.parseInt(sc.nextLine().trim());\n        int grade = Integer.parseInt(sc.nextLine().trim());\n        // Print formatted student details\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "Maya\n14\n9",
+      "expectedOutput": "Name: Maya, Age: 14, Grade: 9",
+      "description": "Maya, 14, Grade 9"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "Kabir\n15\n10",
+      "expectedOutput": "Name: Kabir, Age: 15, Grade: 10"
+    },
+    {
+      "id": "hid-2",
+      "input": "Ananya\n12\n7",
+      "expectedOutput": "Name: Ananya, Age: 12, Grade: 7"
+    }
+  ],
+  "levelId": "level-2"
+}

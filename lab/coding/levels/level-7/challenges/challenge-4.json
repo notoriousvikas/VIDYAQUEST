@@ -1,0 +1,49 @@
+{
+  "id": "l7-c4",
+  "order": 4,
+  "title": "Implement Selection Sort",
+  "difficulty": "Medium",
+  "xpReward": 30,
+  "topic": "Sorting",
+  "description": "Given `N` and an array of `N` integers, sort the array in ascending order using Selection Sort and print the sorted elements separated by spaces.",
+  "instructions": [
+    "For each position `i`, find the index `minIdx` of the smallest element in `arr[i..N-1]`.",
+    "Swap `arr[i]` and `arr[minIdx]`.",
+    "Print the sorted array separated by spaces."
+  ],
+  "constraints": [
+    "1 <= N <= 500"
+  ],
+  "examples": [
+    {
+      "input": "5\n64 25 12 22 11",
+      "output": "11 12 22 25 64"
+    }
+  ],
+  "hints": [
+    "Initialize `minIdx = i` at the start of each outer iteration.",
+    "Inner loop scans `j = i + 1` to `n - 1` updating `minIdx` when `arr[j] < arr[minIdx]`.",
+    "Swap `arr[i]` and `arr[minIdx]` after the inner loop."
+  ],
+  "starterCode": {
+    "python": "n = int(input().strip())\narr = list(map(int, input().split()))\n# Implement selection sort and print\n",
+    "javascript": "const fs = require(\"fs\");\nconst tokens = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\nconst n = tokens[0];\nconst arr = tokens.slice(1, 1 + n);\n// Implement selection sort and print\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();\n        // Implement selection sort and print\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "5\n64 25 12 22 11",
+      "expectedOutput": "11 12 22 25 64",
+      "description": "Selection sort"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "3\n3 1 2",
+      "expectedOutput": "1 2 3"
+    }
+  ],
+  "levelId": "level-7"
+}

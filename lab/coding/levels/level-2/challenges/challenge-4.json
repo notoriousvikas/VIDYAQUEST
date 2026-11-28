@@ -1,0 +1,68 @@
+{
+  "id": "l2-c4",
+  "order": 4,
+  "title": "Celsius to Fahrenheit",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Type conversion & Formulas",
+  "description": "Convert a temperature given in Celsius `C` to Fahrenheit `F` using `F = (C * 9 / 5) + 32` and print the result formatted to 2 decimal places.",
+  "instructions": [
+    "Read Celsius temperature `C` as a float/double.",
+    "Compute `F = (C * 9.0 / 5.0) + 32.0`.",
+    "Print `F` formatted to 2 decimal places."
+  ],
+  "constraints": [
+    "-273.15 <= C <= 10000"
+  ],
+  "examples": [
+    {
+      "input": "0",
+      "output": "32.00"
+    },
+    {
+      "input": "100",
+      "output": "212.00"
+    },
+    {
+      "input": "37",
+      "output": "98.60"
+    }
+  ],
+  "hints": [
+    "Be careful with integer division in Java: use `9.0 / 5.0` instead of `9 / 5`.",
+    "Format the final float to 2 decimal places.",
+    "Test with C = 0 -> 32.00 and C = 100 -> 212.00."
+  ],
+  "starterCode": {
+    "python": "c = float(input().strip())\n# Convert to Fahrenheit and print to 2 decimal places\n",
+    "javascript": "const fs = require(\"fs\");\nconst c = parseFloat(fs.readFileSync(0, \"utf8\").trim());\n// Convert to Fahrenheit and print to 2 decimal places\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        double c = sc.nextDouble();\n        // Convert to Fahrenheit and print to 2 decimal places\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "0",
+      "expectedOutput": "32.00",
+      "description": "Freezing point"
+    },
+    {
+      "id": "pub-2",
+      "input": "37",
+      "expectedOutput": "98.60",
+      "description": "Body temperature"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "100",
+      "expectedOutput": "212.00"
+    },
+    {
+      "id": "hid-2",
+      "input": "-40",
+      "expectedOutput": "-40.00"
+    }
+  ],
+  "levelId": "level-2"
+}

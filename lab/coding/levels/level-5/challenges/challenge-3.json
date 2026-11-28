@@ -1,0 +1,53 @@
+{
+  "id": "l5-c3",
+  "order": 3,
+  "title": "Maximum Using a Function",
+  "difficulty": "Medium",
+  "xpReward": 30,
+  "topic": "Parameters & Return values",
+  "description": "Write a function `findMax(a, b, c)` that returns the largest of three integers. Read 3 integers and print the maximum.",
+  "instructions": [
+    "Define `findMax(a, b, c)` (or `find_max(a, b, c)`).",
+    "Return the maximum integer without using built-in `max()`/`Math.max()` if you want extra practice, or use clean comparisons."
+  ],
+  "constraints": [
+    "-10^9 <= a, b, c <= 10^9"
+  ],
+  "examples": [
+    {
+      "input": "3 19 11",
+      "output": "19"
+    }
+  ],
+  "hints": [
+    "Start with `m = a`, then `if (b > m) m = b;`, `if (c > m) m = c;`, then `return m`.",
+    "This works cleanly for negative numbers too.",
+    "Print the returned integer."
+  ],
+  "starterCode": {
+    "python": "import sys\n\ndef find_max(a, b, c):\n    # Return largest of a, b, c\n    pass\n\na, b, c = map(int, sys.stdin.read().split()[:3])\nprint(find_max(a, b, c))\n",
+    "javascript": "const fs = require(\"fs\");\n\nfunction findMax(a, b, c) {\n  // Return largest of a, b, c\n}\n\nconst [a, b, c] = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\nconsole.log(findMax(a, b, c));\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    static int findMax(int a, int b, int c) {\n        // Return largest of a, b, c\n        return a;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        int c = sc.nextInt();\n        System.out.println(findMax(a, b, c));\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "3 19 11",
+      "expectedOutput": "19",
+      "description": "Middle is max"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "-5 -2 -9",
+      "expectedOutput": "-2"
+    },
+    {
+      "id": "hid-2",
+      "input": "10 10 4",
+      "expectedOutput": "10"
+    }
+  ],
+  "levelId": "level-5"
+}

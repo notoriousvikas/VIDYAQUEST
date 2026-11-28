@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Human Heart 3D Model — NCERT Class 10 Science</title>
+    <!-- Tailwind CSS for clean, responsive scientific UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Three.js & OrbitControls via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0b1120;
+            color: #f8fafc;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #canvas-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        #leader-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        #labels-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+            overflow: hidden;
+        }
+        .heart-label {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.18s ease, background-color 0.2s ease, border-color 0.2s ease, opacity 0.25s ease;
+            white-space: nowrap;
+        }
+        .heart-label:hover {
+            transform: translate(-50%, -50%) scale(1.07);
+            z-index: 30;
+        }
+        .heart-label.active {
+            transform: translate(-50%, -50%) scale(1.1);
+            z-index: 35;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.45);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.84);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+        /* Custom subtle scrollbars for info panel */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+            border-radius: 9999px;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 0.5; }
+        }
+        .pulse-dot {
+            animation: pulseGlow 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D WebGL Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- SVG Layer for 3D-to-2D Leader Lines -->
+    <svg id="leader-svg"></svg>
+
+    <!-- Floating HTML NCERT Labels Layer -->
+    <div id="labels-container"></div>
+
+    <!-- Top Header & Legend -->
+    <header class="fixed top-0 left-0 right-0 z-20 p-3 sm:p-4 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+        <div class="glass-panel rounded-2xl px-4 py-2.5 pointer-events-auto shadow-xl max-w-full">
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-400 font-bold text-sm">
+                    ♥
+                </span>
+                <div>
+                    <h1 class="text-sm sm:text-base font-bold tracking-tight text-white leading-tight">
+                        Sectional View of Human Heart (3D)
+                    </h1>
+                    <p class="text-[11px] sm:text-xs text-slate-400">
+                        NCERT Class 10 Science • Ch. 5: Life Processes (Fig. 5.10)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NCERT Color Legend -->
+        <div class="glass-panel rounded-2xl px-3.5 py-2 pointer-events-auto shadow-xl flex items-center gap-3 sm:gap-4 text-xs">
+            <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#4f46e5] shadow-[0_0_8px_#4f46e5]"></span>
+                <span class="text-slate-200 font-medium">Deoxygenated Blood (Venous)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#dc2626] shadow-[0_0_8px_#dc2626]"></span>
+                <span class="text-slate-200 font-medium">Oxygenated Blood (Arterial)</span>
+            </div>
+            <div class="hidden md:flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-amber-300"></span>
+                <span class="text-slate-200 font-medium">Septum / Valves / Chordae</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Multiple-Choice NCERT Viva-Voce Quiz Modal / Card -->
+    <div id="quiz-banner" class="hidden fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-xl glass-panel rounded-2xl p-4 sm:p-5 border-amber-400/50 shadow-2xl max-h-[76vh] overflow-y-auto">
+        <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span class="font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                <span>🎯</span>
+                <span id="quiz-progress">NCERT MCQ Quiz • Question 1 / 8</span>
+            </span>
+            <div class="flex items-center gap-2">
+                <span id="quiz-score" class="font-bold text-white bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700">Score: 0 / 8</span>
+                <button id="btn-quiz-close-x" type="button" class="text-slate-400 hover:text-white px-1.5 py-0.5 rounded bg-slate-800/80 text-xs">✕</button>
+            </div>
+        </div>
+
+        <p id="quiz-prompt" class="text-sm sm:text-base font-bold text-white leading-snug mb-3">
+            Loading question...
+        </p>
+
+        <!-- 4 Multiple-Choice Options -->
+        <div id="quiz-options" class="space-y-2">
+            <!-- Populated dynamically -->
+        </div>
+
+        <!-- Step-by-Step Correction & NCERT Explanation Box -->
+        <div id="quiz-correction-box" class="hidden mt-3 p-3 rounded-xl border text-xs leading-relaxed">
+            <div id="quiz-feedback" class="font-bold text-sm mb-1"></div>
+            <div id="quiz-correction-detail" class="text-slate-200"></div>
+        </div>
+
+        <div class="mt-3 flex items-center justify-end gap-2">
+            <button id="btn-quiz-next" type="button" class="hidden px-4 py-2 rounded-xl text-xs font-bold bg-sky-500 text-white hover:bg-sky-400 transition shadow-lg">
+                Next Question ▶
+            </button>
+        </div>
+    </div>
+
+    <!-- NCERT Part Inspection Drawer / Card -->
+    <aside id="info-card" class="fixed bottom-20 sm:bottom-24 right-3 left-3 sm:left-auto sm:right-4 sm:w-96 z-25 glass-panel rounded-2xl p-4 shadow-2xl transition-all duration-300 border-slate-700/70">
+        <div class="flex items-start justify-between gap-2 mb-2">
+            <div>
+                <span id="info-badge" class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 mb-1">
+                    Oxygenated Blood
+                </span>
+                <h2 id="info-title" class="text-base sm:text-lg font-bold text-white leading-snug">
+                    Select any NCERT Label or Heart Part
+                </h2>
+            </div>
+            <button id="close-info-btn" title="Close Card" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                ✕
+            </button>
+        </div>
+
+        <p id="info-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-3">
+            Drag to rotate in 3D, scroll/pinch to zoom, and click on any of the 10 NCERT labels (like <strong>Aorta</strong>, <strong>Left ventricle</strong>, or <strong>Septum</strong>) to examine its role in double circulation.
+        </p>
+
+        <div id="info-flow-box" class="grid grid-cols-2 gap-2 text-xs bg-slate-900/80 rounded-xl p-2.5 border border-slate-800">
+            <div>
+                <span class="block text-[10px] uppercase tracking-wider text-slate-400">Receives Blood From</span>
+                <span id="info-from" class="font-semibold text-slate-100">Pulmonary veins / Vena cava</span>
+            </div>
+            <div>
+                <span class="block text-[10px] uppercase tracking-wider text-slate-400">Sends Blood To</span>
+                <span id="info-to" class="font-semibold text-slate-100">Lungs & Body Organs</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Bottom Interactive Controls Bar -->
+    <footer class="fixed bottom-3 left-1/2 -translate-x-1/2 z-20 w-[96%] max-w-4xl">
+        <div class="glass-panel rounded-2xl p-2 sm:p-2.5 shadow-2xl flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+            <!-- Toggle Cutaway / Exterior View -->
+            <button id="btn-cutaway" class="px-3 py-2 rounded-xl text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/40 hover:bg-sky-500/30 transition flex items-center gap-1.5">
+                <span>🔪</span>
+                <span id="txt-cutaway">Cutaway View: ON</span>
+            </button>
+
+            <!-- Toggle Heartbeat Animation -->
+            <button id="btn-heartbeat" class="px-3 py-2 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30 transition flex items-center gap-1.5">
+                <span class="pulse-dot">💓</span>
+                <span id="txt-heartbeat">Heartbeat: ON</span>
+            </button>
+
+            <!-- Toggle Double Circulation Blood Flow -->
+            <button id="btn-bloodflow" class="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 hover:bg-indigo-500/30 transition flex items-center gap-1.5">
+                <span>🩸</span>
+                <span id="txt-bloodflow">Blood Flow: ON</span>
+            </button>
+
+            <!-- Toggle NCERT Labels -->
+            <button id="btn-labels" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-600/50 hover:bg-slate-700 transition flex items-center gap-1.5">
+                <span>🏷️</span>
+                <span id="txt-labels">Labels: ON</span>
+            </button>
+
+            <!-- Toggle Self-Test Quiz Mode -->
+            <button id="btn-quiz" class="px-3 py-2 rounded-xl text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition flex items-center gap-1.5">
+                <span>🎯</span>
+                <span id="txt-quiz">Self-Test Quiz</span>
+            </button>
+
+            <!-- Reset Camera -->
+            <button id="btn-reset" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:bg-slate-700 transition flex items-center gap-1" title="Reset 3D View">
+                <span>↺</span>
+                <span class="hidden sm:inline">Reset View</span>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        /**
+         * ============================================================================
+         * NCERT CLASS 10 SCIENCE (CHAPTER 5: LIFE PROCESSES) — HUMAN HEART 3D MODEL
+         * ============================================================================
+         * Anatomical Perspective Note:
+         * In standard NCERT diagrams (Fig. 5.10 "Sectional view of the human heart"),
+         * we face the anterior (front) of the body:
+         * - Viewer's LEFT side  = Anatomical RIGHT side (Blue: Vena cava, Right atrium, Right ventricle)
+         * - Viewer's RIGHT side = Anatomical LEFT side (Red: Pulmonary veins, Left atrium, Left ventricle)
+         */
+
+        // ----------------------------------------------------------------------------
+        // 1. NCERT CLASS 10 KNOWLEDGE BASE (ALL 10 TEXTBOOK LABELS)
+        // ----------------------------------------------------------------------------
+        const NCERT_PARTS = [
+            {
+                id: 'vena_cava_upper',
+                name: 'Vena cava from upper body',
+                bloodType: 'Deoxygenated Blood',
+                badgeClass: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+                pinColor: '#818cf8',
+                anchor3D: new THREE.Vector3(-0.92, 1.95, 0.08),
+                labelOffset2D: { x: -195, y: -95 },
+                cameraPos: new THREE.Vector3(-2.4, 2.4, 5.2),
+                from: 'Head, neck & upper limbs',
+                to: 'Right atrium',
+                description: 'Also called the Superior Vena Cava. It collects deoxygenated (CO₂-rich) blood from the upper parts of the body and pours it into the right atrium.'
+            },
+            {
+                id: 'right_atrium',
+                name: 'Right atrium',
+                bloodType: 'Deoxygenated Blood',
+                badgeClass: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+                pinColor: '#6366f1',
+                anchor3D: new THREE.Vector3(-0.95, 0.65, 0.18),
+                labelOffset2D: { x: -205, y: -15 },
+                cameraPos: new THREE.Vector3(-2.8, 0.9, 5.0),
+                from: 'Vena cava (upper & lower body)',
+                to: 'Right ventricle (via tricuspid valve)',
+                description: 'The upper chamber on the right side of the heart. It relaxes to receive deoxygenated blood from the body and contracts to push it down into the right ventricle.'
+            },
+            {
+                id: 'vena_cava_lower',
+                name: 'Vena cava from lower body',
+                bloodType: 'Deoxygenated Blood',
+                badgeClass: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+                pinColor: '#818cf8',
+                anchor3D: new THREE.Vector3(-0.96, -1.55, -0.18),
+                labelOffset2D: { x: -195, y: 75 },
+                cameraPos: new THREE.Vector3(-2.5, -1.4, 5.2),
+                from: 'Abdomen, trunk & lower limbs',
+                to: 'Right atrium',
+                description: 'Also called the Inferior Vena Cava. It returns deoxygenated blood from the lower regions of the body upward into the right atrium.'
+            },
+            {
+                id: 'right_ventricle',
+                name: 'Right ventricle',
+                bloodType: 'Deoxygenated Blood',
+                badgeClass: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+                pinColor: '#6366f1',
+                anchor3D: new THREE.Vector3(-0.62, -0.85, 0.25),
+                labelOffset2D: { x: -185, y: 145 },
+                cameraPos: new THREE.Vector3(-2.2, -0.8, 5.2),
+                from: 'Right atrium',
+                to: 'Lungs (via Pulmonary arteries)',
+                description: 'The lower-right muscular chamber. When it contracts, it pumps deoxygenated blood through the pulmonary arteries to the lungs for oxygenation.'
+            },
+            {
+                id: 'aorta',
+                name: 'Aorta',
+                bloodType: 'Oxygenated Blood',
+                badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+                pinColor: '#f87171',
+                anchor3D: new THREE.Vector3(0.08, 2.38, 0.08),
+                labelOffset2D: { x: 165, y: -135 },
+                cameraPos: new THREE.Vector3(0.5, 2.8, 5.4),
+                from: 'Left ventricle',
+                to: 'All organs & tissues of the body',
+                description: 'The largest artery in the human body. Arising from the left ventricle, its thick elastic walls withstand high pressure to distribute oxygen-rich blood throughout the body.'
+            },
+            {
+                id: 'pulmonary_arteries',
+                name: 'Pulmonary arteries',
+                bloodType: 'Deoxygenated Blood',
+                badgeClass: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+                pinColor: '#818cf8',
+                anchor3D: new THREE.Vector3(0.85, 1.65, 0.28),
+                labelOffset2D: { x: 195, y: -75 },
+                cameraPos: new THREE.Vector3(1.8, 2.0, 5.2),
+                from: 'Right ventricle',
+                to: 'Left & Right Lungs',
+                description: 'The only arteries in the body that carry deoxygenated blood. They branch into the left and right lungs where carbon dioxide is exchanged for oxygen.'
+            },
+            {
+                id: 'pulmonary_veins',
+                name: 'Pulmonary veins',
+                bloodType: 'Oxygenated Blood',
+                badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+                pinColor: '#fb7185',
+                anchor3D: new THREE.Vector3(1.62, 1.05, -0.02),
+                labelOffset2D: { x: 205, y: -15 },
+                cameraPos: new THREE.Vector3(2.8, 1.2, 5.0),
+                from: 'Lungs (oxygenated alveoli)',
+                to: 'Left atrium',
+                description: 'The only veins in the body that carry oxygenated blood. They bring oxygen-rich blood back from the lungs into the left atrium.'
+            },
+            {
+                id: 'left_atrium',
+                name: 'Left atrium',
+                bloodType: 'Oxygenated Blood',
+                badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+                pinColor: '#f43f5e',
+                anchor3D: new THREE.Vector3(1.02, 0.65, 0.16),
+                labelOffset2D: { x: 205, y: 45 },
+                cameraPos: new THREE.Vector3(2.6, 0.7, 5.0),
+                from: 'Pulmonary veins',
+                to: 'Left ventricle (via bicuspid/mitral valve)',
+                description: 'Thin-walled upper chamber on the left side of the heart. It relaxes while collecting oxygenated blood from the lungs and contracts to fill the left ventricle.'
+            },
+            {
+                id: 'left_ventricle',
+                name: 'Left ventricle',
+                bloodType: 'Oxygenated Blood',
+                badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+                pinColor: '#f43f5e',
+                anchor3D: new THREE.Vector3(0.75, -0.88, 0.24),
+                labelOffset2D: { x: 195, y: 115 },
+                cameraPos: new THREE.Vector3(2.4, -0.8, 5.2),
+                from: 'Left atrium',
+                to: 'Entire body (via Aorta)',
+                description: 'Possesses the thickest muscular wall of all four chambers because it has to pump oxygenated blood at high pressure to every organ from head to toe.'
+            },
+            {
+                id: 'septum',
+                name: 'Septum (dividing wall)',
+                bloodType: 'Muscular Partition',
+                badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+                pinColor: '#fbbf24',
+                anchor3D: new THREE.Vector3(0.11, -1.05, 0.24),
+                labelOffset2D: { x: 35, y: 168 },
+                cameraPos: new THREE.Vector3(0.2, -1.1, 4.8),
+                from: 'Separates Right & Left sides',
+                to: 'Prevents mixing of blood',
+                description: 'A thick muscular wall separating the right side (deoxygenated blood) from the left side (oxygenated blood), ensuring highly efficient oxygen supply for warm-blooded humans.'
+            }
+        ];
+
+        // ----------------------------------------------------------------------------
+        // 2. APPLICATION STATE
+        // ----------------------------------------------------------------------------
+        const state = {
+            cutaway: true,
+            heartbeat: true,
+            bloodFlow: true,
+            showLabels: true,
+            quizMode: false,
+            selectedPartId: null,
+            quizTarget: null,
+            quizScore: 0,
+            quizAnswered: new Set(),
+            targetCamPos: null,
+            targetLookAt: new THREE.Vector3(0, 0.1, 0)
+        };
+
+        // ----------------------------------------------------------------------------
+        // 3. THREE.JS SCENE, CAMERA, RENDERER & STUDIO LIGHTING
+        // ----------------------------------------------------------------------------
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0b1120);
+        scene.fog = new THREE.FogExp2(0x0b1120, 0.025);
+
+        const defaultCamPos = new THREE.Vector3(0, 0.35, 7.2);
+        const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.copy(defaultCamPos);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.18;
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.minDistance = 3.2;
+        controls.maxDistance = 14;
+        controls.target.set(0, 0.1, 0);
+        controls.addEventListener('start', () => {
+            state.targetCamPos = null;
+        });
+
+        // Studio Medical Lighting
+        const ambientLight = new THREE.AmbientLight(0xf1f5f9, 0.72);
+        scene.add(ambientLight);
+
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1.15);
+        keyLight.position.set(4, 7, 6);
+        keyLight.castShadow = true;
+        scene.add(keyLight);
+
+        const rimLight = new THREE.PointLight(0x38bdf8, 0.75, 18);
+        rimLight.position.set(-5, 3, -5);
+        scene.add(rimLight);
+
+        const warmRimLight = new THREE.PointLight(0xf43f5e, 0.7, 18);
+        warmRimLight.position.set(5, -2, -4);
+        scene.add(warmRimLight);
+
+        // ----------------------------------------------------------------------------
+        // 4. PROCEDURAL 3D ANATOMICAL HEART CONSTRUCTION (PHOTOREALISTIC TISSUES)
+        // ----------------------------------------------------------------------------
+        const heartRoot = new THREE.Group();
+        scene.add(heartRoot);
+
+        // Separate groups for beat physics (atria beat slightly before ventricles)
+        const atriaGroup = new THREE.Group();
+        const ventricleGroup = new THREE.Group();
+        const vesselsGroup = new THREE.Group();
+        const exteriorCoverGroup = new THREE.Group();
+        const pinsGroup = new THREE.Group();
+
+        heartRoot.add(atriaGroup);
+        heartRoot.add(ventricleGroup);
+        heartRoot.add(vesselsGroup);
+        heartRoot.add(exteriorCoverGroup);
+        heartRoot.add(pinsGroup);
+
+        // Interactive mesh lookup array for raycasting
+        const clickableMeshes = [];
+        const partMeshesMap = {}; // id -> Array of meshes belonging to this part
+
+        function registerPartMesh(partId, mesh) {
+            mesh.userData.partId = partId;
+            clickableMeshes.push(mesh);
+            if (!partMeshesMap[partId]) partMeshesMap[partId] = [];
+            partMeshesMap[partId].push(mesh);
+        }
+
+        // Procedural Organic Myocardium & Wet-Serosa Bump/Color CanvasTextures
+        function createOrganicTissueTexture(baseHex, veinHex, fiberHex, isStriated = true) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = baseHex;
+            ctx.fillRect(0, 0, 512, 512);
+
+            // Subtle organic muscle mottled shading
+            for (let i = 0; i < 420; i++) {
+                const x = Math.random() * 512;
+                const y = Math.random() * 512;
+                const r = 12 + Math.random() * 38;
+                const grad = ctx.createRadialGradient(x, y, 1, x, y, r);
+                grad.addColorStop(0, i % 2 === 0 ? veinHex : fiberHex);
+                grad.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.globalAlpha = 0.08;
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Myocardial muscle fiber striations
+            if (isStriated) {
+                ctx.globalAlpha = 0.14;
+                ctx.strokeStyle = fiberHex;
+                for (let y = 0; y < 512; y += 6) {
+                    ctx.lineWidth = 1 + Math.random() * 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.bezierCurveTo(170, y + Math.sin(y * 0.05) * 8, 340, y - Math.cos(y * 0.05) * 8, 512, y);
+                    ctx.stroke();
+                }
+            }
+
+            // Fine branching sub-epicardial micro-capillaries
+            ctx.globalAlpha = 0.22;
+            ctx.strokeStyle = veinHex;
+            for (let c = 0; c < 18; c++) {
+                let cx = Math.random() * 512;
+                let cy = Math.random() * 512;
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                for (let s = 0; s < 6; s++) {
+                    cx += (Math.random() - 0.35) * 45;
+                    cy += (Math.random() - 0.2) * 45;
+                    ctx.lineTo(cx, cy);
+                }
+                ctx.stroke();
+            }
+
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(2, 2);
+            return tex;
+        }
+
+        function createTissueBumpTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#808080';
+            ctx.fillRect(0, 0, 256, 256);
+            for (let i = 0; i < 650; i++) {
+                const x = Math.random() * 256;
+                const y = Math.random() * 256;
+                const rad = 3 + Math.random() * 14;
+                const g = ctx.createRadialGradient(x, y, 0.5, x, y, rad);
+                g.addColorStop(0, i % 2 === 0 ? '#b8b8b8' : '#4a4a4a');
+                g.addColorStop(1, 'rgba(128,128,128,0)');
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(x, y, rad, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(3, 3);
+            return tex;
+        }
+
+        const texArterialRed = createOrganicTissueTexture('#b91c1c', '#450a0a', '#f87171', true);
+        const texVenousPlum = createOrganicTissueTexture('#3730a3', '#1e1b4b', '#6366f1', true);
+        const texMyocardium = createOrganicTissueTexture('#881337', '#3b0716', '#e11d48', true);
+        const texBumpOrganic = createTissueBumpTexture();
+
+        // Realistic wet cardiac tissue materials (clearcoat simulates glistening epicardial serous fluid)
+        const matRightBlue = new THREE.MeshPhysicalMaterial({
+            color: 0x4338ca,
+            map: texVenousPlum,
+            bumpMap: texBumpOrganic,
+            bumpScale: 0.035,
+            emissive: 0x17143b,
+            roughness: 0.28,
+            metalness: 0.04,
+            clearcoat: 0.78,
+            clearcoatRoughness: 0.18,
+            side: THREE.DoubleSide
+        });
+
+        const matRightCavity = new THREE.MeshPhysicalMaterial({
+            color: 0x312e81,
+            map: texVenousPlum,
+            bumpMap: texBumpOrganic,
+            bumpScale: 0.045,
+            emissive: 0x110e2e,
+            roughness: 0.34,
+            clearcoat: 0.65,
+            side: THREE.DoubleSide
+        });
+
+        const matLeftRed = new THREE.MeshPhysicalMaterial({
+            color: 0xdc2626,
+            map: texArterialRed,
+            bumpMap: texBumpOrganic,
+            bumpScale: 0.035,
+            emissive: 0x2a0608,
+            roughness: 0.26,
+            metalness: 0.04,
+            clearcoat: 0.82,
+            clearcoatRoughness: 0.16,
+            side: THREE.DoubleSide
+        });
+
+        const matLeftCavity = new THREE.MeshPhysicalMaterial({
+            color: 0x991b1b,
+            map: texArterialRed,
+            bumpMap: texBumpOrganic,
+            bumpScale: 0.045,
+            emissive: 0x260507,
+            roughness: 0.32,
+            clearcoat: 0.68,
+            side: THREE.DoubleSide
+        });
+
+        const matSeptum = new THREE.MeshPhysicalMaterial({
+            color: 0xb45309,
+            map: texMyocardium,
+            bumpMap: texBumpOrganic,
+            bumpScale: 0.04,
+            emissive: 0x2b1202,
+            roughness: 0.32,
+            clearcoat: 0.65
+        });
+
+        const matValve = new THREE.MeshPhysicalMaterial({
+            color: 0xfef3c7,
+            emissive: 0x3f2305,
+            roughness: 0.25,
+            clearcoat: 0.7,
+            side: THREE.DoubleSide
+        });
+
+        const matChordae = new THREE.MeshStandardMaterial({
+            color: 0xfde68a,
+            roughness: 0.35
+        });
+
+        const matMuscleWallOuter = new THREE.MeshPhysicalMaterial({
+            color: 0x9f1239,
+            map: texMyocardium,
+            bumpMap: texBumpOrganic,
+            bumpScale: 0.04,
+            roughness: 0.26,
+            clearcoat: 0.85,
+            clearcoatRoughness: 0.15,
+            transparent: true,
+            opacity: 0.98
+        });
+
+        const matEpicardialFat = new THREE.MeshPhysicalMaterial({
+            color: 0xfacc15,
+            emissive: 0x422006,
+            roughness: 0.38,
+            clearcoat: 0.55,
+            transparent: true,
+            opacity: 0.68
+        });
+
+        // Helper: Build curved blood vessel along a CatmullRomCurve3 with realistic vessel wall thickness
+        function createVessel(points, radiusBottom, radiusTop, material, partId, openEnds = true) {
+            const curve = new THREE.CatmullRomCurve3(points);
+            const tubeGeo = new THREE.TubeGeometry(curve, 40, radiusBottom, 26, false);
+
+            // Taper radius smoothly if radiusBottom !== radiusTop
+            if (radiusBottom !== radiusTop) {
+                const pos = tubeGeo.attributes.position;
+                const v = new THREE.Vector3();
+                const center = new THREE.Vector3();
+                for (let i = 0; i < pos.count; i++) {
+                    const u = Math.floor(i / 27) / 40;
+                    curve.getPointAt(Math.min(1, Math.max(0, u)), center);
+                    v.fromBufferAttribute(pos, i).sub(center);
+                    const scale = THREE.MathUtils.lerp(1, radiusTop / radiusBottom, u);
+                    v.multiplyScalar(scale).add(center);
+                    pos.setXYZ(i, v.x, v.y, v.z);
+                }
+                tubeGeo.computeVertexNormals();
+            }
+
+            const mesh = new THREE.Mesh(tubeGeo, material.clone());
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            vesselsGroup.add(mesh);
+            registerPartMesh(partId, mesh);
+
+            // Add realistic tunica media / lumen rim at open vessel ends
+            if (openEnds) {
+                const endPt = points[points.length - 1];
+                const prevPt = points[points.length - 2];
+                const dir = new THREE.Vector3().subVectors(endPt, prevPt).normalize();
+                const rimGeo = new THREE.TorusGeometry(radiusTop * 0.90, radiusTop * 0.16, 14, 28);
+                const rimMat = new THREE.MeshPhysicalMaterial({ color: 0xfce7f3, roughness: 0.32, clearcoat: 0.6 });
+                const rim = new THREE.Mesh(rimGeo, rimMat);
+                rim.position.copy(endPt);
+                rim.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir);
+                vesselsGroup.add(rim);
+
+                // Dark inner lumen core so open vessels look hollow
+                const lumenGeo = new THREE.CircleGeometry(radiusTop * 0.78, 22);
+                const lumenMat = new THREE.MeshBasicMaterial({ color: 0x180408, side: THREE.DoubleSide });
+                const lumen = new THREE.Mesh(lumenGeo, lumenMat);
+                lumen.position.copy(endPt).addScaledVector(dir, -0.01);
+                lumen.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir);
+                vesselsGroup.add(lumen);
+            }
+            return mesh;
+        }
+
+        // --- A. RIGHT ATRIUM & RIGHT AURICLE (Viewer's Left, Upper Chamber) ---
+        const rightAtriumGeo = new THREE.SphereGeometry(0.74, 36, 28, 0, Math.PI * 1.38, 0, Math.PI);
+        const rightAtriumMesh = new THREE.Mesh(rightAtriumGeo, matRightCavity.clone());
+        rightAtriumMesh.position.set(-0.98, 0.68, -0.05);
+        rightAtriumMesh.rotation.set(0.1, -0.5, 0.15);
+        rightAtriumMesh.scale.set(0.96, 1.06, 0.88);
+        atriaGroup.add(rightAtriumMesh);
+        registerPartMesh('right_atrium', rightAtriumMesh);
+
+        // Ear-like Right Auricle appendage
+        const rightAuricle = new THREE.Mesh(
+            new THREE.SphereGeometry(0.36, 20, 16),
+            matRightBlue.clone()
+        );
+        rightAuricle.scale.set(1.25, 0.75, 0.65);
+        rightAuricle.position.set(-1.12, 1.05, 0.26);
+        rightAuricle.rotation.set(0.2, 0.3, -0.45);
+        atriaGroup.add(rightAuricle);
+        registerPartMesh('right_atrium', rightAuricle);
+
+        // --- B. LEFT ATRIUM & LEFT AURICLE (Viewer's Right, Upper Chamber) ---
+        const leftAtriumGeo = new THREE.SphereGeometry(0.70, 36, 28, 0, Math.PI * 1.38, 0, Math.PI);
+        const leftAtriumMesh = new THREE.Mesh(leftAtriumGeo, matLeftCavity.clone());
+        leftAtriumMesh.position.set(1.02, 0.72, -0.05);
+        leftAtriumMesh.rotation.set(0.1, 2.3, -0.15);
+        leftAtriumMesh.scale.set(0.96, 1.04, 0.88);
+        atriaGroup.add(leftAtriumMesh);
+        registerPartMesh('left_atrium', leftAtriumMesh);
+
+        // Ear-like Left Auricle appendage
+        const leftAuricle = new THREE.Mesh(
+            new THREE.SphereGeometry(0.34, 20, 16),
+            matLeftRed.clone()
+        );
+        leftAuricle.scale.set(1.25, 0.75, 0.65);
+        leftAuricle.position.set(1.15, 1.06, 0.25);
+        leftAuricle.rotation.set(0.2, -0.3, 0.45);
+        atriaGroup.add(leftAuricle);
+        registerPartMesh('left_atrium', leftAuricle);
+
+        // --- C. RIGHT VENTRICLE (Viewer's Left, Lower Chamber) ---
+        const rvShape = new THREE.Shape();
+        rvShape.moveTo(-0.12, 0.15);
+        rvShape.quadraticCurveTo(-1.35, 0.10, -1.25, -0.85);
+        rvShape.quadraticCurveTo(-1.05, -1.78, 0.08, -2.02);
+        rvShape.quadraticCurveTo(-0.02, -0.95, -0.12, 0.15);
+
+        const rvExtrude = new THREE.ExtrudeGeometry(rvShape, {
+            depth: 0.75,
+            bevelEnabled: true,
+            bevelSegments: 10,
+            steps: 2,
+            bevelSize: 0.16,
+            bevelThickness: 0.18
+        });
+        const rightVentricleMesh = new THREE.Mesh(rvExtrude, matRightCavity.clone());
+        rightVentricleMesh.position.set(0, 0, -0.55);
+        ventricleGroup.add(rightVentricleMesh);
+        registerPartMesh('right_ventricle', rightVentricleMesh);
+
+        // --- D. LEFT VENTRICLE (Viewer's Right, Lower Chamber with thicker muscular wall) ---
+        const lvShape = new THREE.Shape();
+        lvShape.moveTo(0.22, 0.18);
+        lvShape.quadraticCurveTo(1.42, 0.12, 1.32, -0.92);
+        lvShape.quadraticCurveTo(1.08, -1.95, 0.24, -2.08);
+        lvShape.quadraticCurveTo(0.22, -0.95, 0.22, 0.18);
+
+        const lvExtrude = new THREE.ExtrudeGeometry(lvShape, {
+            depth: 0.78,
+            bevelEnabled: true,
+            bevelSegments: 10,
+            steps: 2,
+            bevelSize: 0.20,
+            bevelThickness: 0.20
+        });
+        const leftVentricleMesh = new THREE.Mesh(lvExtrude, matLeftCavity.clone());
+        leftVentricleMesh.position.set(0, 0, -0.55);
+        ventricleGroup.add(leftVentricleMesh);
+        registerPartMesh('left_ventricle', leftVentricleMesh);
+
+        // Internal Muscular Ridges (Trabeculae Carneae) inside both ventricles
+        [
+            { x: -0.62, y: -1.15, rot: 0.35, mat: matRightBlue, id: 'right_ventricle' },
+            { x: -0.45, y: -1.45, rot: 0.25, mat: matRightBlue, id: 'right_ventricle' },
+            { x: 0.72, y: -1.15, rot: -0.35, mat: matLeftRed, id: 'left_ventricle' },
+            { x: 0.56, y: -1.48, rot: -0.25, mat: matLeftRed, id: 'left_ventricle' }
+        ].forEach(tr => {
+            const ridge = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.045, 0.065, 0.58, 12),
+                tr.mat.clone()
+            );
+            ridge.position.set(tr.x, tr.y, 0.12);
+            ridge.rotation.z = tr.rot;
+            ventricleGroup.add(ridge);
+            registerPartMesh(tr.id, ridge);
+        });
+
+        // Thick outer myocardial wall on the Left Ventricle (NCERT highlight: thicker muscular wall!)
+        const lvWallCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(1.38, 0.15, 0.18),
+            new THREE.Vector3(1.52, -0.85, 0.22),
+            new THREE.Vector3(1.05, -1.85, 0.18),
+            new THREE.Vector3(0.20, -2.22, 0.12)
+        ]);
+        const lvThickWallGeo = new THREE.TubeGeometry(lvWallCurve, 32, 0.23, 18, false);
+        const lvThickWallMesh = new THREE.Mesh(lvThickWallGeo, matLeftRed.clone());
+        ventricleGroup.add(lvThickWallMesh);
+        registerPartMesh('left_ventricle', lvThickWallMesh);
+
+        // Outer right myocardial rim
+        const rvWallCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(-1.35, 0.12, 0.18),
+            new THREE.Vector3(-1.38, -0.85, 0.20),
+            new THREE.Vector3(-0.85, -1.72, 0.16),
+            new THREE.Vector3(0.12, -2.20, 0.12)
+        ]);
+        const rvWallGeo = new THREE.TubeGeometry(rvWallCurve, 32, 0.145, 18, false);
+        const rvWallMesh = new THREE.Mesh(rvWallGeo, matRightBlue.clone());
+        ventricleGroup.add(rvWallMesh);
+        registerPartMesh('right_ventricle', rvWallMesh);
+
+        // --- E. SEPTUM (Muscular Dividing Wall separating Right & Left sides) ---
+        const septumCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(0.02, 0.85, 0.15),
+            new THREE.Vector3(0.06, -0.10, 0.22),
+            new THREE.Vector3(0.11, -1.10, 0.22),
+            new THREE.Vector3(0.16, -2.12, 0.15)
+        ]);
+        const septumGeo = new THREE.TubeGeometry(septumCurve, 36, 0.175, 20, false);
+        const septumMesh = new THREE.Mesh(septumGeo, matSeptum.clone());
+        ventricleGroup.add(septumMesh);
+        registerPartMesh('septum', septumMesh);
+
+        // --- F. HEART VALVES, CHORDAE TENDINEAE & PAPILLARY MUSCLES ---
+        function createValveFlaps(x, y, z, papillaryMat) {
+            const group = new THREE.Group();
+            const flapGeo = new THREE.ConeGeometry(0.19, 0.34, 14, 1, true);
+            const leftFlap = new THREE.Mesh(flapGeo, matValve);
+            leftFlap.position.set(-0.14, 0, 0);
+            leftFlap.rotation.z = -0.35;
+
+            const rightFlap = new THREE.Mesh(flapGeo, matValve);
+            rightFlap.position.set(0.14, 0, 0);
+            rightFlap.rotation.z = 0.35;
+
+            // Papillary muscles at ventricular floor + delicate Chordae Tendineae ("heart strings")
+            const papL = new THREE.Mesh(new THREE.ConeGeometry(0.075, 0.28, 12), papillaryMat);
+            papL.position.set(-0.22, -0.78, 0.02);
+            const papR = new THREE.Mesh(new THREE.ConeGeometry(0.075, 0.28, 12), papillaryMat);
+            papR.position.set(0.22, -0.78, 0.02);
+
+            [-0.18, -0.10, 0.10, 0.18].forEach((cx, idx) => {
+                const start = new THREE.Vector3(cx, -0.14, 0.02);
+                const end = new THREE.Vector3(idx < 2 ? -0.22 : 0.22, -0.66, 0.02);
+                const dist = start.distanceTo(end);
+                const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, dist, 6), matChordae);
+                cord.position.copy(start).add(end).multiplyScalar(0.5);
+                cord.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize());
+                group.add(cord);
+            });
+
+            group.add(leftFlap, rightFlap, papL, papR);
+            group.position.set(x, y, z);
+            return group;
+        }
+        const tricuspidValve = createValveFlaps(-0.68, 0.14, 0.15, matRightBlue);
+        const bicuspidValve = createValveFlaps(0.72, 0.16, 0.15, matLeftRed);
+        ventricleGroup.add(tricuspidValve, bicuspidValve);
+
+        // --- G. MAJOR BLOOD VESSELS (NCERT Diagram Layout) ---
+        // 1. Superior Vena Cava ("Vena cava from upper body")
+        createVessel(
+            [
+                new THREE.Vector3(-0.92, 1.15, 0.05),
+                new THREE.Vector3(-0.92, 1.85, 0.08),
+                new THREE.Vector3(-0.92, 2.48, 0.10)
+            ],
+            0.27, 0.29, matRightBlue, 'vena_cava_upper'
+        );
+
+        // 2. Inferior Vena Cava ("Vena cava from lower body")
+        createVessel(
+            [
+                new THREE.Vector3(-0.96, 0.10, -0.15),
+                new THREE.Vector3(-0.98, -1.15, -0.18),
+                new THREE.Vector3(-0.98, -2.35, -0.20)
+            ],
+            0.26, 0.28, matRightBlue, 'vena_cava_lower'
+        );
+
+        // 3. Aortic Arch ("Aorta") — Arches over the top from Left Ventricle
+        createVessel(
+            [
+                new THREE.Vector3(0.42, 0.35, -0.05),
+                new THREE.Vector3(0.32, 1.65, 0.06),
+                new THREE.Vector3(0.08, 2.52, 0.08),
+                new THREE.Vector3(-0.42, 2.42, -0.08),
+                new THREE.Vector3(-0.62, 1.95, -0.22)
+            ],
+            0.31, 0.28, matLeftRed, 'aorta'
+        );
+        // Three characteristic branches on top of Aortic Arch
+        [-0.18, 0.02, 0.20].forEach((bx, idx) => {
+            createVessel(
+                [
+                    new THREE.Vector3(bx, 2.44 - idx * 0.03, 0.02),
+                    new THREE.Vector3(bx - 0.04, 2.92 - idx * 0.04, 0.02)
+                ],
+                0.085, 0.075, matLeftRed, 'aorta'
+            );
+        });
+
+        // 4. Pulmonary Trunk & Bifurcating Pulmonary Arteries
+        createVessel(
+            [
+                new THREE.Vector3(-0.35, -0.15, 0.30),
+                new THREE.Vector3(-0.15, 1.05, 0.38),
+                new THREE.Vector3(0.05, 1.68, 0.35),
+                new THREE.Vector3(0.85, 1.72, 0.28),
+                new THREE.Vector3(1.45, 1.76, 0.22)
+            ],
+            0.26, 0.21, matRightBlue, 'pulmonary_arteries'
+        );
+        createVessel(
+            [
+                new THREE.Vector3(0.05, 1.68, 0.35),
+                new THREE.Vector3(-0.75, 1.72, 0.26),
+                new THREE.Vector3(-1.45, 1.72, 0.18)
+            ],
+            0.23, 0.20, matRightBlue, 'pulmonary_arteries'
+        );
+
+        // 5. Pulmonary Veins (Entering Left Atrium on Viewer's Right)
+        createVessel(
+            [
+                new THREE.Vector3(1.22, 0.96, 0.05),
+                new THREE.Vector3(1.65, 1.15, 0.0),
+                new THREE.Vector3(2.05, 1.25, -0.04)
+            ],
+            0.16, 0.17, matLeftRed, 'pulmonary_veins'
+        );
+        createVessel(
+            [
+                new THREE.Vector3(1.25, 0.62, -0.05),
+                new THREE.Vector3(1.68, 0.72, -0.08),
+                new THREE.Vector3(2.05, 0.78, -0.12)
+            ],
+            0.16, 0.17, matLeftRed, 'pulmonary_veins'
+        );
+
+        // --- H. ANTERIOR EXTERIOR WALL + CORONARY ARTERIES (Shown when Cutaway View is OFF) ---
+        const extRightGeo = new THREE.SphereGeometry(1.45, 36, 36, Math.PI * 0.5, Math.PI * 0.52, 0.2, Math.PI * 0.75);
+        const extRightMesh = new THREE.Mesh(extRightGeo, matRightBlue.clone());
+        extRightMesh.position.set(-0.15, -0.35, 0.15);
+        extRightMesh.scale.set(0.95, 1.32, 0.75);
+
+        const extLeftGeo = new THREE.SphereGeometry(1.48, 36, 36, 0, Math.PI * 0.52, 0.2, Math.PI * 0.75);
+        const extLeftMesh = new THREE.Mesh(extLeftGeo, matMuscleWallOuter.clone());
+        extLeftMesh.position.set(0.15, -0.35, 0.15);
+        extLeftMesh.scale.set(0.95, 1.35, 0.75);
+
+        // Epicardial fat cushion along anterior interventricular sulcus
+        const sulcusFatCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(-0.08, 0.35, 1.12),
+            new THREE.Vector3(0.02, -0.45, 1.14),
+            new THREE.Vector3(0.12, -1.35, 0.92),
+            new THREE.Vector3(0.18, -1.95, 0.55)
+        ]);
+        const sulcusFat = new THREE.Mesh(new THREE.TubeGeometry(sulcusFatCurve, 24, 0.11, 12, false), matEpicardialFat);
+
+        // Branching Left & Right Coronary Arteries + Cardiac Veins on Heart Surface
+        const ladArteryCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(0.12, 0.42, 1.08),
+            new THREE.Vector3(0.05, -0.35, 1.16),
+            new THREE.Vector3(0.12, -1.15, 0.98),
+            new THREE.Vector3(0.18, -1.88, 0.62)
+        ]);
+        const ladArtery = new THREE.Mesh(
+            new THREE.TubeGeometry(ladArteryCurve, 28, 0.036, 10, false),
+            new THREE.MeshPhysicalMaterial({ color: 0xef4444, roughness: 0.25, clearcoat: 0.8 })
+        );
+
+        const circumflexCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(0.12, 0.36, 1.08),
+            new THREE.Vector3(0.75, 0.22, 0.96),
+            new THREE.Vector3(1.28, -0.05, 0.62)
+        ]);
+        const circumflexArtery = new THREE.Mesh(
+            new THREE.TubeGeometry(circumflexCurve, 20, 0.030, 10, false),
+            new THREE.MeshPhysicalMaterial({ color: 0xef4444, roughness: 0.25, clearcoat: 0.8 })
+        );
+
+        const rcaCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(-0.18, 0.38, 1.06),
+            new THREE.Vector3(-0.78, 0.12, 0.95),
+            new THREE.Vector3(-1.15, -0.55, 0.68),
+            new THREE.Vector3(-0.85, -1.35, 0.55)
+        ]);
+        const rightCoronaryArtery = new THREE.Mesh(
+            new THREE.TubeGeometry(rcaCurve, 24, 0.032, 10, false),
+            new THREE.MeshPhysicalMaterial({ color: 0xef4444, roughness: 0.25, clearcoat: 0.8 })
+        );
+
+        const greatCardiacVeinCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(-0.04, 0.35, 1.10),
+            new THREE.Vector3(-0.04, -0.45, 1.15),
+            new THREE.Vector3(0.04, -1.25, 0.95)
+        ]);
+        const greatCardiacVein = new THREE.Mesh(
+            new THREE.TubeGeometry(greatCardiacVeinCurve, 24, 0.026, 10, false),
+            new THREE.MeshPhysicalMaterial({ color: 0x3730a3, roughness: 0.25, clearcoat: 0.8 })
+        );
+
+        exteriorCoverGroup.add(
+            extRightMesh,
+            extLeftMesh,
+            sulcusFat,
+            ladArtery,
+            circumflexArtery,
+            rightCoronaryArtery,
+            greatCardiacVein
+        );
+        exteriorCoverGroup.visible = false; // Cutaway ON by default so chambers are clearly visible
+
+        // ----------------------------------------------------------------------------
+        // 5. ANIMATED DOUBLE CIRCULATION BLOOD FLOW PARTICLES
+        // ----------------------------------------------------------------------------
+        const bloodParticlesGroup = new THREE.Group();
+        heartRoot.add(bloodParticlesGroup);
+
+        // Path 1: Deoxygenated Blood (Blue) — Vena Cava -> Right Atrium -> Right Ventricle -> Pulmonary Artery
+        const deoxygenatedUpperPath = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(-0.92, 2.35, 0.08),
+            new THREE.Vector3(-0.95, 1.35, 0.12),
+            new THREE.Vector3(-0.92, 0.65, 0.18),
+            new THREE.Vector3(-0.68, -0.15, 0.22),
+            new THREE.Vector3(-0.55, -1.05, 0.25),
+            new THREE.Vector3(-0.25, -0.35, 0.35),
+            new THREE.Vector3(0.05, 1.35, 0.45),
+            new THREE.Vector3(1.32, 1.76, 0.24)
+        ]);
+
+        const deoxygenatedLowerPath = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(-0.98, -2.20, -0.20),
+            new THREE.Vector3(-0.98, -0.60, -0.15),
+            new THREE.Vector3(-0.90, 0.55, 0.15),
+            new THREE.Vector3(-0.65, -0.35, 0.22),
+            new THREE.Vector3(-0.42, -1.15, 0.25),
+            new THREE.Vector3(-0.15, 0.55, 0.40),
+            new THREE.Vector3(0.08, 1.55, 0.40),
+            new THREE.Vector3(-1.35, 1.72, 0.20)
+        ]);
+
+        // Path 2: Oxygenated Blood (Red) — Pulmonary Veins -> Left Atrium -> Left Ventricle -> Aorta
+        const oxygenatedPath = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(1.92, 1.15, -0.02),
+            new THREE.Vector3(1.12, 0.78, 0.12),
+            new THREE.Vector3(0.88, 0.35, 0.18),
+            new THREE.Vector3(0.78, -0.65, 0.24),
+            new THREE.Vector3(0.68, -1.35, 0.24),
+            new THREE.Vector3(0.45, -0.25, 0.15),
+            new THREE.Vector3(0.28, 1.65, 0.12),
+            new THREE.Vector3(0.05, 2.52, 0.08),
+            new THREE.Vector3(-0.58, 2.25, -0.16)
+        ]);
+
+        const flowParticles = [];
+        const particleGeo = new THREE.SphereGeometry(0.065, 10, 10);
+        const blueDropMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd });
+        const redDropMat = new THREE.MeshBasicMaterial({ color: 0xfda4af });
+
+        function spawnFlowParticles(curve, material, count, speedOffset) {
+            for (let i = 0; i < count; i++) {
+                const mesh = new THREE.Mesh(particleGeo, material);
+                bloodParticlesGroup.add(mesh);
+                flowParticles.push({
+                    mesh,
+                    curve,
+                    t: i / count,
+                    speed: 0.18 + speedOffset
+                });
+            }
+        }
+
+        spawnFlowParticles(deoxygenatedUpperPath, blueDropMat, 14, 0.01);
+        spawnFlowParticles(deoxygenatedLowerPath, blueDropMat, 14, 0.0);
+        spawnFlowParticles(oxygenatedPath, redDropMat, 18, 0.02);
+
+        // ----------------------------------------------------------------------------
+        // 6. 3D ANCHOR PINS & FLOATING HTML NCERT LABELS + SVG LEADER LINES
+        // ----------------------------------------------------------------------------
+        const labelsContainer = document.getElementById('labels-container');
+        const leaderSvg = document.getElementById('leader-svg');
+        const labelElements = {};
+
+        NCERT_PARTS.forEach(part => {
+            // 3D Glowing Pin Sphere inside the heart
+            const pinGeo = new THREE.SphereGeometry(0.085, 16, 16);
+            const pinMat = new THREE.MeshBasicMaterial({ color: part.pinColor });
+            const pinMesh = new THREE.Mesh(pinGeo, pinMat);
+            pinMesh.position.copy(part.anchor3D);
+            pinsGroup.add(pinMesh);
+            registerPartMesh(part.id, pinMesh);
+
+            // Outer halo ring around 3D pin
+            const haloGeo = new THREE.RingGeometry(0.11, 0.15, 20);
+            const haloMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.75 });
+            const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+            pinMesh.add(haloMesh);
+
+            // HTML Floating Label Pill
+            const labelEl = document.createElement('button');
+            labelEl.type = 'button';
+            labelEl.className = 'heart-label glass-panel px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold text-slate-100 border border-slate-600/70 shadow-lg flex items-center gap-1.5';
+            labelEl.innerHTML = `
+                <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color: ${part.pinColor};"></span>
+                <span>${part.name}</span>
+            `;
+            labelEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handlePartSelect(part.id);
+            });
+            labelsContainer.appendChild(labelEl);
+
+            // SVG Leader Line & Anchor Dot
+            const lineEl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            lineEl.setAttribute('fill', 'none');
+            lineEl.setAttribute('stroke', part.pinColor);
+            lineEl.setAttribute('stroke-width', '1.6');
+            lineEl.setAttribute('stroke-opacity', '0.85');
+            leaderSvg.appendChild(lineEl);
+
+            const dotEl = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dotEl.setAttribute('r', '3.5');
+            dotEl.setAttribute('fill', '#ffffff');
+            dotEl.setAttribute('stroke', part.pinColor);
+            dotEl.setAttribute('stroke-width', '2');
+            leaderSvg.appendChild(dotEl);
+
+            labelElements[part.id] = {
+                part,
+                pinMesh,
+                haloMesh,
+                labelEl,
+                lineEl,
+                dotEl
+            };
+        });
+
+        // ----------------------------------------------------------------------------
+        // 7. PART SELECTION, HIGHLIGHTING & NCERT INFO CARD LOGIC
+        // ----------------------------------------------------------------------------
+        const infoCard = document.getElementById('info-card');
+        const infoBadge = document.getElementById('info-badge');
+        const infoTitle = document.getElementById('info-title');
+        const infoDesc = document.getElementById('info-desc');
+        const infoFrom = document.getElementById('info-from');
+        const infoTo = document.getElementById('info-to');
+
+        function highlightPartMeshes(selectedId) {
+            // Reset emissive glow on all parts
+            Object.entries(partMeshesMap).forEach(([id, meshes]) => {
+                const isSelected = id === selectedId;
+                meshes.forEach(mesh => {
+                    if (mesh.material && mesh.material.emissive) {
+                        mesh.material.emissiveIntensity = isSelected ? 2.4 : 1.0;
+                    }
+                });
+            });
+
+            // Highlight label pills
+            Object.entries(labelElements).forEach(([id, item]) => {
+                if (id === selectedId) {
+                    item.labelEl.classList.add('active', 'border-sky-400', 'bg-slate-800');
+                    item.lineEl.setAttribute('stroke-width', '2.8');
+                } else {
+                    item.labelEl.classList.remove('active', 'border-sky-400', 'bg-slate-800');
+                    item.lineEl.setAttribute('stroke-width', '1.6');
+                }
+            });
+        }
+
+        function handlePartSelect(partId) {
+            const part = NCERT_PARTS.find(p => p.id === partId);
+            if (!part) return;
+
+            // If in Quiz Mode, evaluate the student's answer!
+            if (state.quizMode) {
+                evaluateQuizAnswer(part);
+                return;
+            }
+
+            state.selectedPartId = partId;
+            highlightPartMeshes(partId);
+
+            // Update NCERT Revision Card
+            infoCard.classList.remove('hidden');
+            infoBadge.textContent = part.bloodType;
+            infoBadge.className = `inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border mb-1 ${part.badgeClass}`;
+            infoTitle.textContent = part.name;
+            infoDesc.textContent = part.description;
+            infoFrom.textContent = part.from;
+            infoTo.textContent = part.to;
+
+            // Smoothly glide camera to inspect the selected structure
+            state.targetCamPos = part.cameraPos.clone();
+            state.targetLookAt = part.anchor3D.clone().multiplyScalar(0.55);
+        }
+
+        document.getElementById('close-info-btn').addEventListener('click', () => {
+            infoCard.classList.add('hidden');
+            state.selectedPartId = null;
+            highlightPartMeshes(null);
+        });
+
+        // ----------------------------------------------------------------------------
+        // 8. 3D RAYCASTING (CLICK / TAP DIRECTLY ON HEART PARTS OR PINS)
+        // ----------------------------------------------------------------------------
+        const raycaster = new THREE.Raycaster();
+        const pointer = new THREE.Vector2();
+        let pointerDownPos = { x: 0, y: 0 };
+
+        renderer.domElement.addEventListener('pointerdown', (e) => {
+            pointerDownPos = { x: e.clientX, y: e.clientY };
+        });
+
+        renderer.domElement.addEventListener('pointerup', (e) => {
+            // Distinguish between a drag/orbit and an intentional tap/click
+            const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+            if (dist > 6) return;
+
+            const rect = renderer.domElement.getBoundingClientRect();
+            pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(pointer, camera);
+            const intersects = raycaster.intersectObjects(clickableMeshes, false);
+
+            if (intersects.length > 0) {
+                const hitPartId = intersects[0].object.userData.partId;
+                if (hitPartId) {
+                    handlePartSelect(hitPartId);
+                }
+            }
+        });
+
+        // ----------------------------------------------------------------------------
+        // 9. SELF-TEST QUIZ MODE FOR CLASS 10 REVISION
+        // ----------------------------------------------------------------------------
+        const NCERT_MCQ_QUESTIONS = [
+            {
+                partId: 'left_ventricle',
+                question: '1. Which chamber of the human heart has the thickest muscular wall, and why?',
+                options: [
+                    'Right atrium — because it receives blood from the entire body',
+                    'Left ventricle — because it has to pump oxygenated blood to all body organs at high pressure',
+                    'Right ventricle — because the lungs are far away from the heart',
+                    'Left atrium — because it stores blood coming from the pulmonary veins'
+                ],
+                correctIndex: 1,
+                correction: 'How to get it right: Ventricles pump blood out into organs (unlike atria which only push blood into ventricles). Between the two ventricles, the Left Ventricle pumps oxygenated blood through the Aorta all the way from head to toe, so it requires the thickest myocardium.'
+            },
+            {
+                partId: 'pulmonary_arteries',
+                question: '2. Which blood vessel carries deoxygenated blood from the heart to the lungs?',
+                options: [
+                    'Pulmonary veins',
+                    'Aorta',
+                    'Pulmonary arteries',
+                    'Vena cava from upper body'
+                ],
+                correctIndex: 2,
+                correction: 'How to get it right: Remember the rule—Arteries carry blood AWAY from the heart. Even though it carries deoxygenated blood, the vessel going away from the Right Ventricle to the lungs is the Pulmonary Artery.'
+            },
+            {
+                partId: 'septum',
+                question: '3. What is the main function of the muscular dividing wall (Septum) in the human heart?',
+                options: [
+                    'It pumps blood directly into the aorta',
+                    'It prevents the mixing of oxygenated and deoxygenated blood',
+                    'It produces red blood cells inside the heart',
+                    'It connects the left atrium to the right ventricle'
+                ],
+                correctIndex: 1,
+                correction: 'How to get it right: Warm-blooded animals (birds and mammals) have high energy needs. The Septum separates the right (deoxygenated) and left (oxygenated) sides so tissues receive a highly efficient supply of oxygen.'
+            },
+            {
+                partId: 'pulmonary_veins',
+                question: '4. Oxygen-rich blood from the lungs first enters which chamber of the heart, and through which vessel?',
+                options: [
+                    'Left atrium via Pulmonary veins',
+                    'Right atrium via Vena cava',
+                    'Left ventricle via Aorta',
+                    'Right ventricle via Pulmonary arteries'
+                ],
+                correctIndex: 0,
+                correction: 'How to get it right: Veins bring blood TOWARD the heart. Oxygenated blood returns from the lungs into the upper-left chamber (Left Atrium) through the Pulmonary Veins.'
+            },
+            {
+                partId: 'aorta',
+                question: '5. When the left ventricle contracts, oxygenated blood is pumped into which largest artery of the body?',
+                options: [
+                    'Superior Vena Cava',
+                    'Pulmonary Artery',
+                    'Aorta',
+                    'Coronary Vein'
+                ],
+                correctIndex: 2,
+                correction: 'How to get it right: Look at the large red arch at the top of the 3D heart—the Aorta arches upward from the Left Ventricle to distribute oxygen-rich blood to systemic circulation.'
+            },
+            {
+                partId: 'vena_cava_upper',
+                question: '6. Deoxygenated blood from the upper and lower parts of the body is collected into the right atrium by:',
+                options: [
+                    'Pulmonary veins',
+                    'Vena cava (from upper and lower body)',
+                    'Aorta',
+                    'Septum'
+                ],
+                correctIndex: 1,
+                correction: 'How to get it right: The blue vessels entering the Right Atrium on the viewer’s left side are the Vena Cava from upper body (Superior) and Vena Cava from lower body (Inferior).'
+            },
+            {
+                partId: 'right_ventricle',
+                question: '7. Why do heart valves exist between the atria and ventricles?',
+                options: [
+                    'To mix oxygenated and deoxygenated blood evenly',
+                    'To ensure that blood does not flow backwards when the atria or ventricles contract',
+                    'To slow down the heartbeat during exercise',
+                    'To absorb carbon dioxide from the blood'
+                ],
+                correctIndex: 1,
+                correction: 'How to get it right: According to NCERT Class 10 Ch. 5, valves act as one-way doors that prevent the backflow of blood when the muscular ventricles contract.'
+            },
+            {
+                partId: 'left_atrium',
+                question: '8. Why is circulation in the human heart called "Double Circulation"?',
+                options: [
+                    'Because the heart beats twice every second',
+                    'Because blood goes through the heart twice during each complete cycle (pulmonary + systemic)',
+                    'Because blood flows in two directions inside the same artery',
+                    'Because both ventricles contain oxygenated blood'
+                ],
+                correctIndex: 1,
+                correction: 'How to get it right: Blood passes through the heart twice per full cycle: (1) Right side → Lungs → Left side (Pulmonary), and (2) Left side → Body organs → Right side (Systemic).'
+            }
+        ];
+
+        const quizBanner = document.getElementById('quiz-banner');
+        const quizProgress = document.getElementById('quiz-progress');
+        const quizPrompt = document.getElementById('quiz-prompt');
+        const quizOptionsEl = document.getElementById('quiz-options');
+        const quizCorrectionBox = document.getElementById('quiz-correction-box');
+        const quizFeedback = document.getElementById('quiz-feedback');
+        const quizCorrectionDetail = document.getElementById('quiz-correction-detail');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const btnQuizNext = document.getElementById('btn-quiz-next');
+
+        let currentMcqIndex = 0;
+        let mcqAnswered = false;
+
+        function renderMcqQuestion() {
+            const total = NCERT_MCQ_QUESTIONS.length;
+            quizScoreEl.textContent = `Score: ${state.quizScore} / ${total}`;
+            quizCorrectionBox.classList.add('hidden');
+            btnQuizNext.classList.add('hidden');
+            quizOptionsEl.innerHTML = '';
+
+            if (currentMcqIndex >= total) {
+                quizProgress.textContent = 'NCERT MCQ Quiz • Completed!';
+                quizPrompt.textContent = `🎉 Quiz Finished! You scored ${state.quizScore} out of ${total}.`;
+                quizCorrectionBox.classList.remove('hidden');
+                quizCorrectionBox.className = 'mt-3 p-3.5 rounded-xl border border-emerald-500/40 bg-emerald-500/15 text-xs leading-relaxed';
+                quizFeedback.textContent = state.quizScore >= 6
+                    ? '🌟 Excellent mastery of NCERT Class 10 Human Heart & Double Circulation!'
+                    : '📘 Good effort! Review the highlighted 3D parts and try again for a full score.';
+                quizCorrectionDetail.textContent = 'Click "Restart Quiz" below to practice again or click "Exit Quiz" to return to free 3D exploration.';
+
+                const restartBtn = document.createElement('button');
+                restartBtn.type = 'button';
+                restartBtn.className = 'w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 hover:bg-amber-400 transition shadow';
+                restartBtn.textContent = '↺ Restart MCQ Quiz';
+                restartBtn.addEventListener('click', () => {
+                    state.quizScore = 0;
+                    currentMcqIndex = 0;
+                    renderMcqQuestion();
+                });
+                quizOptionsEl.appendChild(restartBtn);
+                highlightPartMeshes(null);
+                return;
+            }
+
+            const item = NCERT_MCQ_QUESTIONS[currentMcqIndex];
+            mcqAnswered = false;
+            quizProgress.textContent = `NCERT MCQ Quiz • Question ${currentMcqIndex + 1} / ${total}`;
+            quizPrompt.textContent = item.question;
+
+            // Focus & highlight the relevant 3D structure so student can visually inspect while answering
+            const part = NCERT_PARTS.find(p => p.id === item.partId);
+            if (part) {
+                highlightPartMeshes(part.id);
+                state.targetCamPos = part.cameraPos.clone();
+                state.targetLookAt = part.anchor3D.clone().multiplyScalar(0.55);
+            }
+
+            item.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left p-2.5 sm:p-3 rounded-xl border border-slate-700 bg-slate-900/85 hover:bg-slate-800 hover:border-sky-400 text-xs sm:text-sm font-medium text-slate-100 transition flex items-start gap-2.5';
+                btn.innerHTML = `
+                    <span class="w-5 h-5 rounded-full bg-slate-800 border border-slate-600 text-[11px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                        ${String.fromCharCode(65 + idx)}
+                    </span>
+                    <span>${optText}</span>
+                `;
+                btn.addEventListener('click', () => handleMcqAnswer(idx));
+                quizOptionsEl.appendChild(btn);
+            });
+        }
+
+        function handleMcqAnswer(selectedIndex) {
+            if (mcqAnswered) return;
+            mcqAnswered = true;
+
+            const item = NCERT_MCQ_QUESTIONS[currentMcqIndex];
+            const total = NCERT_MCQ_QUESTIONS.length;
+            const isCorrect = selectedIndex === item.correctIndex;
+
+            if (isCorrect) {
+                state.quizScore++;
+            }
+            quizScoreEl.textContent = `Score: ${state.quizScore} / ${total}`;
+
+            // Style all option buttons to show the user's choice vs the right answer
+            const optionBtns = quizOptionsEl.querySelectorAll('button');
+            optionBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === item.correctIndex) {
+                    btn.className = 'w-full text-left p-2.5 sm:p-3 rounded-xl border-2 border-emerald-400 bg-emerald-500/20 text-xs sm:text-sm font-semibold text-emerald-200 flex items-start gap-2.5';
+                } else if (idx === selectedIndex) {
+                    btn.className = 'w-full text-left p-2.5 sm:p-3 rounded-xl border-2 border-rose-400 bg-rose-500/20 text-xs sm:text-sm font-semibold text-rose-200 flex items-start gap-2.5';
+                } else {
+                    btn.className = 'w-full text-left p-2.5 sm:p-3 rounded-xl border border-slate-800 bg-slate-950/50 text-xs sm:text-sm text-slate-500 flex items-start gap-2.5 opacity-65';
+                }
+            });
+
+            // Reveal detailed correction & NCERT explanation
+            quizCorrectionBox.classList.remove('hidden');
+            if (isCorrect) {
+                quizCorrectionBox.className = 'mt-3 p-3 rounded-xl border border-emerald-500/40 bg-emerald-500/15 text-xs leading-relaxed';
+                quizFeedback.className = 'font-bold text-sm mb-1 text-emerald-300';
+                quizFeedback.textContent = '✅ Correct Answer!';
+            } else {
+                const rightLetter = String.fromCharCode(65 + item.correctIndex);
+                quizCorrectionBox.className = 'mt-3 p-3 rounded-xl border border-rose-500/45 bg-rose-500/15 text-xs leading-relaxed';
+                quizFeedback.className = 'font-bold text-sm mb-1 text-rose-300';
+                quizFeedback.textContent = `❌ Incorrect — The right answer is Option ${rightLetter}: ${item.options[item.correctIndex]}`;
+            }
+            quizCorrectionDetail.textContent = item.correction;
+
+            btnQuizNext.textContent = currentMcqIndex + 1 < total ? 'Next Question ▶' : 'See Final Score 🏆';
+            btnQuizNext.classList.remove('hidden');
+        }
+
+        function evaluateQuizAnswer(clickedPart) {
+            // Keep 3D part inspection working even if user clicks the heart during MCQ quiz
+            const part = NCERT_PARTS.find(p => p.id === clickedPart.id);
+            if (part) {
+                highlightPartMeshes(part.id);
+            }
+        }
+
+        function toggleQuizMode() {
+            state.quizMode = !state.quizMode;
+            const btnQuiz = document.getElementById('btn-quiz');
+            const txtQuiz = document.getElementById('txt-quiz');
+
+            if (state.quizMode) {
+                state.cutaway = true;
+                exteriorCoverGroup.visible = false;
+                const txtCut = document.getElementById('txt-cutaway');
+                if (txtCut) txtCut.textContent = 'Cutaway View: ON';
+
+                state.quizScore = 0;
+                currentMcqIndex = 0;
+
+                quizBanner.classList.remove('hidden');
+                infoCard.classList.add('hidden');
+                btnQuiz.classList.add('bg-amber-500', 'text-slate-950');
+                txtQuiz.textContent = 'Exit Quiz';
+                renderMcqQuestion();
+            } else {
+                quizBanner.classList.add('hidden');
+                infoCard.classList.remove('hidden');
+                btnQuiz.classList.remove('bg-amber-500', 'text-slate-950');
+                txtQuiz.textContent = 'Self-Test Quiz';
+                highlightPartMeshes(null);
+            }
+        }
+
+        btnQuizNext.addEventListener('click', () => {
+            currentMcqIndex++;
+            renderMcqQuestion();
+        });
+
+        document.getElementById('btn-quiz-close-x').addEventListener('click', () => {
+            if (state.quizMode) toggleQuizMode();
+        });
+
+        document.getElementById('btn-cutaway').addEventListener('click', () => {
+            state.cutaway = !state.cutaway;
+            exteriorCoverGroup.visible = !state.cutaway;
+            document.getElementById('txt-cutaway').textContent = `Cutaway View: ${state.cutaway ? 'ON' : 'OFF'}`;
+        });
+
+        document.getElementById('btn-heartbeat').addEventListener('click', () => {
+            state.heartbeat = !state.heartbeat;
+            document.getElementById('txt-heartbeat').textContent = `Heartbeat: ${state.heartbeat ? 'ON' : 'OFF'}`;
+            if (!state.heartbeat) {
+                atriaGroup.scale.set(1, 1, 1);
+                ventricleGroup.scale.set(1, 1, 1);
+                vesselsGroup.scale.set(1, 1, 1);
+            }
+        });
+
+        document.getElementById('btn-bloodflow').addEventListener('click', () => {
+            state.bloodFlow = !state.bloodFlow;
+            bloodParticlesGroup.visible = state.bloodFlow;
+            document.getElementById('txt-bloodflow').textContent = `Blood Flow: ${state.bloodFlow ? 'ON' : 'OFF'}`;
+        });
+
+        document.getElementById('btn-labels').addEventListener('click', () => {
+            state.showLabels = !state.showLabels;
+            document.getElementById('txt-labels').textContent = `Labels: ${state.showLabels ? 'ON' : 'OFF'}`;
+        });
+
+        document.getElementById('btn-quiz').addEventListener('click', toggleQuizMode);
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            state.selectedPartId = null;
+            highlightPartMeshes(null);
+            state.targetCamPos = defaultCamPos.clone();
+            state.targetLookAt = new THREE.Vector3(0, 0.1, 0);
+        });
+
+        // ----------------------------------------------------------------------------
+        // 11. 3D-TO-2D LABEL & LEADER LINE PROJECTION LOOP
+        // ----------------------------------------------------------------------------
+        const tempVec = new THREE.Vector3();
+
+        function updateLabelsAndLeaders() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const isMobile = width < 640;
+            const scaleFactor = isMobile ? Math.max(0.56, width / 620) : Math.min(1.08, width / 1150);
+
+            Object.values(labelElements).forEach(({ part, pinMesh, haloMesh, labelEl, lineEl, dotEl }) => {
+                // Make pin halo face camera
+                haloMesh.lookAt(camera.position);
+
+                // Hide labels if toggled off or hidden during Quiz Mode (unless already answered)
+                const isHiddenByQuiz = state.quizMode && !state.quizAnswered.has(part.id);
+                if (!state.showLabels || isHiddenByQuiz) {
+                    labelEl.style.display = 'none';
+                    lineEl.style.display = 'none';
+                    dotEl.style.display = 'none';
+                    return;
+                }
+
+                // Get world position of 3D pin (accounts for heartbeat pulse!)
+                pinMesh.getWorldPosition(tempVec);
+                tempVec.project(camera);
+
+                // Hide if behind camera
+                if (tempVec.z > 1) {
+                    labelEl.style.display = 'none';
+                    lineEl.style.display = 'none';
+                    dotEl.style.display = 'none';
+                    return;
+                }
+
+                const screenX = (tempVec.x * 0.5 + 0.5) * width;
+                const screenY = (-(tempVec.y * 0.5) + 0.5) * height;
+
+                // Calculate responsive floating pill position around the heart
+                const offsetX = part.labelOffset2D.x * scaleFactor;
+                const offsetY = part.labelOffset2D.y * scaleFactor;
+
+                // Clamp inside viewport margins so labels never clip off mobile edges
+                const padX = isMobile ? 68 : 95;
+                const padTop = 86;
+                const padBottom = isMobile ? 165 : 105;
+
+                const labelX = THREE.MathUtils.clamp(screenX + offsetX, padX, width - padX);
+                const labelY = THREE.MathUtils.clamp(screenY + offsetY, padTop, height - padBottom);
+
+                labelEl.style.display = 'flex';
+                labelEl.style.left = `${labelX}px`;
+                labelEl.style.top = `${labelY}px`;
+
+                // Draw clean elbow leader line from 3D pin to label pill
+                const elbowX = screenX + (offsetX * 0.55);
+                const elbowY = labelY;
+
+                lineEl.style.display = 'block';
+                lineEl.setAttribute('points', `${screenX},${screenY} ${elbowX},${elbowY} ${labelX},${labelY}`);
+
+                dotEl.style.display = 'block';
+                dotEl.setAttribute('cx', screenX);
+                dotEl.setAttribute('cy', screenY);
+            });
+        }
+
+        // ----------------------------------------------------------------------------
+        // 12. MAIN ANIMATION LOOP (CARDIAC CYCLE + BLOOD FLOW + CAMERA GLIDE)
+        // ----------------------------------------------------------------------------
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const dt = Math.min(clock.getDelta(), 0.05);
+            const elapsed = clock.getElapsedTime();
+
+            // 1. Realistic Lub-Dub Cardiac Cycle Animation
+            if (state.heartbeat) {
+                const cycle = (elapsed * 1.15) % 1.0; // ~69 BPM resting heart rate
+
+                // Atrial systole (0.0 -> 0.25), Ventricular systole (0.25 -> 0.55)
+                const atrialPulse = Math.exp(-Math.pow((cycle - 0.12) / 0.07, 2)) * 0.055;
+                const ventricularPulse = Math.exp(-Math.pow((cycle - 0.34) / 0.09, 2)) * 0.065;
+
+                atriaGroup.scale.set(1 + atrialPulse, 1 + atrialPulse * 0.8, 1 + atrialPulse);
+                ventricleGroup.scale.set(1 + ventricularPulse, 1 + ventricularPulse * 0.7, 1 + ventricularPulse);
+                vesselsGroup.scale.set(1 + ventricularPulse * 0.35, 1 + ventricularPulse * 0.2, 1 + ventricularPulse * 0.35);
+
+                // Subtle valve flap opening/closing synchronized with heartbeat
+                const valveAngle = 0.28 + atrialPulse * 4.5;
+                tricuspidValve.children[0].rotation.z = -valveAngle;
+                tricuspidValve.children[1].rotation.z = valveAngle;
+                bicuspidValve.children[0].rotation.z = -valveAngle;
+                bicuspidValve.children[1].rotation.z = valveAngle;
+            }
+
+            // 2. Animated Blood Flow Particles (Double Circulation)
+            if (state.bloodFlow) {
+                const speedMult = state.heartbeat ? 1.0 : 0.45;
+                flowParticles.forEach(p => {
+                    p.t = (p.t + dt * p.speed * speedMult) % 1.0;
+                    p.curve.getPointAt(p.t, p.mesh.position);
+                });
+            }
+
+            // 3. Smooth Camera Transition when inspecting a part
+            if (state.targetCamPos) {
+                camera.position.lerp(state.targetCamPos, 0.07);
+                controls.target.lerp(state.targetLookAt, 0.07);
+                if (camera.position.distanceTo(state.targetCamPos) < 0.04) {
+                    state.targetCamPos = null;
+                }
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+            updateLabelsAndLeaders();
+        }
+
+        // Responsive Resize Handling
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        });
+
+        // Start animation once window is loaded
+        window.onload = function () {
+            animate();
+        };
+    </script>
+</body>
+</html>

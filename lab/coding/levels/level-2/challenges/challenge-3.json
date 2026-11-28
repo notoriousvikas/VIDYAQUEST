@@ -1,0 +1,64 @@
+{
+  "id": "l2-c3",
+  "order": 3,
+  "title": "Area of a Rectangle",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Floats & Arithmetic",
+  "description": "Given the length and width of a rectangle as numbers, calculate and print its area formatted to 2 decimal places (e.g., `20.00` or `13.75`).",
+  "instructions": [
+    "Read two floating-point numbers: length and width.",
+    "Compute `area = length * width`.",
+    "Print the area formatted to 2 decimal places."
+  ],
+  "constraints": [
+    "0 < length, width <= 10000"
+  ],
+  "examples": [
+    {
+      "input": "5 4",
+      "output": "20.00"
+    },
+    {
+      "input": "5.5 2.5",
+      "output": "13.75"
+    }
+  ],
+  "hints": [
+    "Python: print(f\"{area:.2f}\")",
+    "JavaScript: console.log(area.toFixed(2));",
+    "Java: System.out.printf(\"%.2f%n\", area);"
+  ],
+  "starterCode": {
+    "python": "import sys\ntokens = sys.stdin.read().split()\nlength, width = float(tokens[0]), float(tokens[1])\n# Calculate and print area to 2 decimal places\n",
+    "javascript": "const fs = require(\"fs\");\nconst tokens = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/);\nconst length = parseFloat(tokens[0]);\nconst width = parseFloat(tokens[1]);\n// Calculate and print area to 2 decimal places\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        double length = sc.nextDouble();\n        double width = sc.nextDouble();\n        // Calculate and print area to 2 decimal places\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "5 4",
+      "expectedOutput": "20.00",
+      "description": "Integer dimensions"
+    },
+    {
+      "id": "pub-2",
+      "input": "5.5 2.5",
+      "expectedOutput": "13.75",
+      "description": "Decimal dimensions"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "10 3.2",
+      "expectedOutput": "32.00"
+    },
+    {
+      "id": "hid-2",
+      "input": "7.25 4",
+      "expectedOutput": "29.00"
+    }
+  ],
+  "levelId": "level-2"
+}

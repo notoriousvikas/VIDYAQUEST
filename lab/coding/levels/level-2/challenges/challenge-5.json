@@ -1,0 +1,64 @@
+{
+  "id": "l2-c5",
+  "order": 5,
+  "title": "Average of Three Numbers",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Floats & Division",
+  "description": "Read three numbers and print their average formatted to 2 decimal places.",
+  "instructions": [
+    "Read three numbers (integers or decimals) from stdin.",
+    "Compute `(a + b + c) / 3.0`.",
+    "Print the result formatted to 2 decimal places."
+  ],
+  "constraints": [
+    "-10^6 <= a, b, c <= 10^6"
+  ],
+  "examples": [
+    {
+      "input": "10 20 30",
+      "output": "20.00"
+    },
+    {
+      "input": "5 7 9",
+      "output": "7.00"
+    }
+  ],
+  "hints": [
+    "Wrap `a + b + c` in parentheses before dividing by `3.0`.",
+    "Use `.2f` / `.toFixed(2)` for 2 decimal places.",
+    "Verify with `1 2 4` -> `2.33`."
+  ],
+  "starterCode": {
+    "python": "import sys\na, b, c = map(float, sys.stdin.read().split()[:3])\n# Print average to 2 decimal places\n",
+    "javascript": "const fs = require(\"fs\");\nconst [a, b, c] = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\n// Print average to 2 decimal places\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        double a = sc.nextDouble();\n        double b = sc.nextDouble();\n        double c = sc.nextDouble();\n        // Print average to 2 decimal places\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "10 20 30",
+      "expectedOutput": "20.00",
+      "description": "Whole average"
+    },
+    {
+      "id": "pub-2",
+      "input": "1 2 4",
+      "expectedOutput": "2.33",
+      "description": "Repeating decimal"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "0 0 0",
+      "expectedOutput": "0.00"
+    },
+    {
+      "id": "hid-2",
+      "input": "15.5 20.5 24.0",
+      "expectedOutput": "20.00"
+    }
+  ],
+  "levelId": "level-2"
+}

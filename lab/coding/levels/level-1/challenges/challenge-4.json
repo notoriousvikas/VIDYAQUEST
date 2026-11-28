@@ -1,0 +1,48 @@
+{
+  "id": "l1-c4",
+  "order": 4,
+  "title": "Display a Simple Message",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "Print statements & Variables",
+  "description": "Store `\"VidyaQuest\"` in a variable named `platform` and print `Learning on VidyaQuest is fun!`.",
+  "instructions": [
+    "Create a string variable named `platform` with value `\"VidyaQuest\"`.",
+    "Print `Learning on VidyaQuest is fun!` using that variable."
+  ],
+  "constraints": [
+    "Output must be exactly: Learning on VidyaQuest is fun!"
+  ],
+  "examples": [
+    {
+      "input": "",
+      "output": "Learning on VidyaQuest is fun!"
+    }
+  ],
+  "hints": [
+    "In Python: platform = \"VidyaQuest\", then print(f\"Learning on {platform} is fun!\").",
+    "In JS: const platform = \"VidyaQuest\"; console.log(`Learning on ${platform} is fun!`);",
+    "In Java: String platform = \"VidyaQuest\"; System.out.println(\"Learning on \" + platform + \" is fun!\");"
+  ],
+  "starterCode": {
+    "python": "platform = \"VidyaQuest\"\n# Print the message using platform\n",
+    "javascript": "const platform = \"VidyaQuest\";\n// Print the message using platform\n",
+    "java": "public class Main {\n    public static void main(String[] args) {\n        String platform = \"VidyaQuest\";\n        // Print the message using platform\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "",
+      "expectedOutput": "Learning on VidyaQuest is fun!",
+      "description": "Message using variable"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "",
+      "expectedOutput": "Learning on VidyaQuest is fun!"
+    }
+  ],
+  "levelId": "level-1"
+}

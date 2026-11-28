@@ -1,0 +1,56 @@
+{
+  "id": "l8-c5",
+  "order": 5,
+  "title": "Merge Two Sorted Arrays",
+  "difficulty": "Hard",
+  "xpReward": 50,
+  "topic": "Two pointers & Merging",
+  "description": "Given two sorted ascending arrays of sizes `N` and `M`, merge them into a single sorted ascending array and print all `N + M` elements separated by spaces.",
+  "instructions": [
+    "Line 1: `N` and `M`",
+    "Line 2: `N` sorted integers",
+    "Line 3: `M` sorted integers",
+    "Use the two-pointer merge technique in `O(N + M)` time and print the merged array."
+  ],
+  "constraints": [
+    "1 <= N, M <= 1000"
+  ],
+  "examples": [
+    {
+      "input": "3 3\n1 3 5\n2 4 6",
+      "output": "1 2 3 4 5 6"
+    }
+  ],
+  "hints": [
+    "Maintain pointer `i = 0` for the first array and `j = 0` for the second.",
+    "Pick the smaller of `a[i]` and `b[j]` and advance that pointer.",
+    "Append any remaining elements from `a` or `b` after one array finishes."
+  ],
+  "starterCode": {
+    "python": "n, m = map(int, input().split())\na = list(map(int, input().split()))\nb = list(map(int, input().split()))\n# Merge and print\n",
+    "javascript": "const fs = require(\"fs\");\nconst tokens = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\nconst n = tokens[0], m = tokens[1];\nconst a = tokens.slice(2, 2 + n);\nconst b = tokens.slice(2 + n, 2 + n + m);\n// Merge and print\n",
+    "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n        int[] a = new int[n];\n        int[] b = new int[m];\n        for (int i = 0; i < n; i++) a[i] = sc.nextInt();\n        for (int i = 0; i < m; i++) b[i] = sc.nextInt();\n        // Merge and print\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "3 3\n1 3 5\n2 4 6",
+      "expectedOutput": "1 2 3 4 5 6",
+      "description": "Interleaved arrays"
+    },
+    {
+      "id": "pub-2",
+      "input": "2 3\n1 2\n10 20 30",
+      "expectedOutput": "1 2 10 20 30",
+      "description": "Disjoint ranges"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "3 2\n1 4 4\n2 4",
+      "expectedOutput": "1 2 4 4 4"
+    }
+  ],
+  "levelId": "level-8"
+}

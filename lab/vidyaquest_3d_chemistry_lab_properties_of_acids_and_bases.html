@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>VidyaQuest Virtual Lab | Properties of Acids & Bases (Class 10 NCERT)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Three.js r128 & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background-color: #060b16;
+      color: #f8fafc;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      z-index: 1;
+      touch-action: none;
+    }
+    /* Floating HTML 3D Callout Layer */
+    #callout-layer {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      z-index: 5;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .callout-3d {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.2s ease, transform 0.12s ease-out;
+      will-change: left, top, opacity;
+    }
+    .hud-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .hud-glass {
+      background: rgba(10, 18, 34, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    }
+    .hud-subcard {
+      background: rgba(20, 32, 54, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Custom High-Contrast Lab Slider */
+    input[type="range"].lab-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 9px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #ec4899 100%);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"].lab-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #10b981;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.9);
+      cursor: grab;
+      transition: transform 0.12s ease;
+    }
+    input[type="range"].lab-slider::-webkit-slider-thumb:active {
+      transform: scale(1.18);
+      cursor: grabbing;
+    }
+    input[type="range"].lab-slider::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #10b981;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.9);
+      cursor: grab;
+    }
+    @keyframes idlePlayPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.75); }
+      50% { box-shadow: 0 0 0 9px rgba(16, 185, 129, 0); }
+    }
+    .play-pulse {
+      animation: idlePlayPulse 1.7s infinite;
+    }
+    @keyframes popBounce {
+      0% { transform: translate(-50%, -50%) scale(0.6); }
+      60% { transform: translate(-50%, -50%) scale(1.18); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    .pop-animate {
+      animation: popBounce 0.35s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. FULL-BLEED INTERACTIVE 3D CANVAS -->
+  <div id="canvas-container"></div>
+
+  <!-- 2. PROJECTED 3D HTML FLOATING CALLOUTS OVERLAY -->
+  <div id="callout-layer">
+    <!-- Tube A Label -->
+    <div id="callout-tube-a" class="callout-3d px-2.5 py-1 rounded-lg bg-slate-950/90 border border-rose-400/70 text-center shadow-lg">
+      <div class="text-[11px] font-extrabold text-rose-300 leading-none">Tube A: dil. HCl</div>
+      <div class="text-[9px] text-slate-300 font-medium mt-0.5">Hydrochloric Acid</div>
+    </div>
+
+    <!-- Tube B Label -->
+    <div id="callout-tube-b" class="callout-3d px-2.5 py-1 rounded-lg bg-slate-950/90 border border-sky-400/70 text-center shadow-lg">
+      <div class="text-[11px] font-extrabold text-sky-300 leading-none">Tube B: dil. NaOH</div>
+      <div class="text-[9px] text-slate-300 font-medium mt-0.5">Sodium Hydroxide</div>
+    </div>
+
+    <!-- Tube C Lime Water Label (Test 4) -->
+    <div id="callout-tube-c" class="callout-3d hidden px-2.5 py-1 rounded-lg bg-slate-950/90 border border-emerald-400/70 text-center shadow-lg">
+      <div class="text-[11px] font-extrabold text-emerald-300 leading-none">Tube C: Ca(OH)₂</div>
+      <div class="text-[9px] text-slate-300 font-medium mt-0.5">Lime Water</div>
+    </div>
+
+    <!-- Dynamic Result Callout A (Above Tube A) -->
+    <div id="callout-res-a" class="callout-3d hidden px-3 py-1 rounded-full bg-rose-600/95 border border-white/60 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap">
+      Blue → Red
+    </div>
+
+    <!-- Dynamic Result Callout B (Above Tube B) -->
+    <div id="callout-res-b" class="callout-3d hidden px-3 py-1 rounded-full bg-sky-600/95 border border-white/60 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap">
+      Red → Blue
+    </div>
+
+    <!-- Dynamic Result Callout C (Above Tube C / Lime Water) -->
+    <div id="callout-res-c" class="callout-3d hidden px-3 py-1 rounded-full bg-emerald-600/95 border border-white/70 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap">
+      Milky Precipitate (CaCO₃)
+    </div>
+  </div>
+
+  <!-- 3. ERGONOMIC SINGLE-SCREEN HUD LAYER -->
+  <div class="hud-layer">
+
+    <!-- TOP HEADER BAR (48px) -->
+    <header class="fixed top-2.5 left-3 right-3 h-12 flex items-center justify-between gap-2 pointer-events-none">
+      <div class="hud-glass h-full rounded-xl px-3.5 flex items-center gap-2.5 pointer-events-auto">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-600 flex items-center justify-center font-extrabold text-slate-950 text-xs shadow">
+          VQ
+        </div>
+        <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          VidyaQuest 3D Lab
+        </span>
+        <h1 class="text-xs sm:text-sm font-bold text-white truncate">
+          Properties of Acids &amp; Bases — HCl vs NaOH
+        </h1>
+      </div>
+
+      <div class="h-full flex items-center gap-2 pointer-events-auto">
+        <div class="hud-glass h-full px-3 rounded-xl flex items-center gap-1.5 text-xs font-bold text-cyan-300">
+          <span>Progress:</span>
+          <span id="header-progress-badge" class="mono bg-cyan-500/20 px-1.5 py-0.5 rounded text-white">0/4</span>
+        </div>
+
+        <button id="btn-sound" title="Toggle Web Audio Sound FX" class="hud-glass h-full px-3 rounded-xl hover:bg-slate-800/90 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition">
+          <span id="sound-icon">🔊</span>
+          <span class="hidden md:inline" id="sound-text">Sound</span>
+        </button>
+
+        <button id="btn-reset-cam" title="Reset 3D Camera Framing" class="hud-glass h-full px-3 rounded-xl hover:bg-slate-800/90 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition">
+          <span>🎥</span>
+          <span class="hidden md:inline">Reset View</span>
+        </button>
+
+        <button id="btn-toggle-right" title="Show/Hide Live Observation Card" class="hud-glass h-full px-3 rounded-xl hover:bg-slate-800/90 text-xs font-semibold text-cyan-200 flex items-center gap-1.5 transition">
+          <span id="toggle-right-icon">📋</span>
+          <span class="hidden md:inline" id="toggle-right-text">Hide Notes</span>
+        </button>
+
+        <button id="btn-open-viva" class="h-full px-3.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 hover:from-indigo-400 hover:to-pink-500 text-white text-xs font-extrabold shadow-lg border border-purple-300/40 flex items-center gap-1.5 transition">
+          <span>🎓 Viva Voce</span>
+          <span class="px-1.5 py-0.5 rounded bg-white/20 text-[10px]">6 Qs</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- SLEEK HORIZONTAL TOP-BAR EXPERIMENT RIBBON (Zero Left-Viewport Overlap) -->
+    <nav class="fixed top-16 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
+      <div class="hud-glass rounded-xl p-1.5 flex items-center gap-1.5 overflow-x-auto max-w-full pointer-events-auto" id="experiment-list">
+        <button data-exp="0" class="exp-btn shrink-0 px-3 py-1.5 rounded-lg border border-emerald-400/80 bg-emerald-500/25 text-white text-xs font-bold transition flex items-center gap-1.5">
+          <span id="badge-exp-0" class="text-[11px]">⚪</span>
+          <span>1. Litmus Paper</span>
+        </button>
+
+        <button data-exp="1" class="exp-btn shrink-0 px-3 py-1.5 rounded-lg border border-slate-700/70 bg-slate-800/55 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <span id="badge-exp-1" class="text-[11px]">⚪</span>
+          <span>2. Phenolphthalein</span>
+        </button>
+
+        <button data-exp="2" class="exp-btn shrink-0 px-3 py-1.5 rounded-lg border border-slate-700/70 bg-slate-800/55 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <span id="badge-exp-2" class="text-[11px]">⚪</span>
+          <span>3. Zinc Metal (H₂ Pop)</span>
+        </button>
+
+        <button data-exp="3" class="exp-btn shrink-0 px-3 py-1.5 rounded-lg border border-slate-700/70 bg-slate-800/55 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition flex items-center gap-1.5">
+          <span id="badge-exp-3" class="text-[11px]">⚪</span>
+          <span>4. Solid Na₂CO₃ (CO₂)</span>
+        </button>
+
+        <div class="h-5 w-px bg-slate-700/80 mx-0.5 shrink-0"></div>
+
+        <button id="btn-demo-all" title="Automatically play all 4 tests sequentially" class="shrink-0 px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-300 border border-amber-400/50 text-[11px] font-bold transition flex items-center gap-1">
+          <span>⚡ Demo All 4</span>
+        </button>
+      </div>
+
+      <!-- Compact Stage Pill on Top-Right -->
+      <div class="hidden xl:flex hud-glass rounded-xl px-3 py-1.5 items-center gap-2 pointer-events-auto shrink-0">
+        <span id="stage-badge" class="mono text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">
+          STAGE 1/4: SETUP (0%)
+        </span>
+        <span class="text-slate-600">|</span>
+        <span id="live-status-pill" class="text-[11px] font-semibold text-amber-300">
+          Press Play to Begin
+        </span>
+      </div>
+    </nav>
+
+    <!-- COMPACT TOP-LEFT LIVE NARRATION STRIP (Slim, Well Above Test Tubes) -->
+    <div class="fixed top-[106px] left-3 right-3 lg:right-[295px] flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+      <div class="hud-glass rounded-xl px-3.5 py-1.5 border-emerald-400/35 max-w-[640px] pointer-events-auto flex items-center gap-2.5">
+        <span class="shrink-0 w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <p id="narration-banner-text" class="text-xs font-medium text-slate-100 leading-snug">
+          Vivid blue &amp; red litmus strips are suspended above Tube A (dil. HCl) and Tube B (dil. NaOH). Click <span class="text-emerald-300 font-bold">▶ Play Experiment</span>!
+        </p>
+      </div>
+
+      <!-- AUTO-PROMPT VIVA CTA PILL (Appears when an experiment reaches 100%) -->
+      <div id="viva-ready-banner" class="hidden hud-glass rounded-xl px-3 py-1.5 border-purple-400/70 bg-purple-950/85 pointer-events-auto items-center gap-2.5 shadow-xl">
+        <span class="text-xs font-bold text-purple-200">✨ Experiment Complete!</span>
+        <button id="btn-banner-viva" type="button" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white text-[11px] font-extrabold shadow transition">
+          🎓 Take Viva Quiz →
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT-HAND LIVE OBSERVATION & EQUATION CARD (Collapsible) -->
+    <aside id="right-obs-panel" class="hidden lg:block fixed top-[106px] right-3 w-[275px] pointer-events-auto">
+      <div class="hud-glass rounded-2xl p-3 space-y-2.5">
+        <div class="flex items-center justify-between border-b border-slate-700/70 pb-1.5">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-cyan-300">Live Lab Notebook</span>
+          <span id="right-test-tag" class="mono text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200">Test 1/4</span>
+        </div>
+
+        <!-- Tube A (HCl) Live Card -->
+        <div class="rounded-xl bg-rose-950/35 border border-rose-500/35 p-2 space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold text-rose-300">Tube A: dil. HCl (Acid)</span>
+            <span id="tube-a-state" class="mono text-[9px] px-1.5 py-0.5 rounded bg-rose-500/25 text-rose-200">Ready</span>
+          </div>
+          <div id="eq-acid" class="mono text-[10px] text-rose-100 bg-slate-950/75 px-2 py-1 rounded leading-tight">
+            HCl(aq) → H⁺(aq) + Cl⁻(aq)
+          </div>
+          <p id="obs-tube-a" class="text-[11px] text-slate-200 leading-snug">
+            Blue &amp; red litmus strips poised above dilute hydrochloric acid.
+          </p>
+        </div>
+
+        <!-- Tube B (NaOH) Live Card -->
+        <div class="rounded-xl bg-sky-950/35 border border-sky-500/35 p-2 space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold text-sky-300">Tube B: dil. NaOH (Base)</span>
+            <span id="tube-b-state" class="mono text-[9px] px-1.5 py-0.5 rounded bg-sky-500/25 text-sky-200">Ready</span>
+          </div>
+          <div id="eq-base" class="mono text-[10px] text-sky-100 bg-slate-950/75 px-2 py-1 rounded leading-tight">
+            NaOH(aq) → Na⁺(aq) + OH⁻(aq)
+          </div>
+          <p id="obs-tube-b" class="text-[11px] text-slate-200 leading-snug">
+            Blue &amp; red litmus strips poised above dilute sodium hydroxide.
+          </p>
+        </div>
+
+        <!-- Scientific Inference Box -->
+        <div class="hud-subcard rounded-xl p-2">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-amber-300">NCERT Key Inference</div>
+          <p id="key-inference-text" class="text-[11px] text-slate-200 mt-0.5 leading-snug">
+            Acids turn blue litmus red due to H⁺ ions; bases turn red litmus blue due to OH⁻ ions.
+          </p>
+        </div>
+
+        <div class="text-[10px] text-slate-400 flex items-center justify-between px-1 pt-0.5">
+          <span>🖱️ Drag to Rotate</span>
+          <span>🔍 Scroll to Zoom</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- BOTTOM REACTION CONTROL DOCK (Centered, Compact, Prominent Play Motor + Viva CTA) -->
+    <footer class="fixed bottom-2.5 left-3 right-3 lg:right-[295px] flex justify-center pointer-events-none">
+      <div class="hud-glass rounded-2xl px-3.5 py-2.5 w-full max-w-[780px] pointer-events-auto">
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-3">
+          <!-- BULLETPROOF PROMINENT PLAY / PAUSE / REPLAY BUTTON -->
+          <button id="btn-play-main" type="button" class="play-pulse shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg flex items-center gap-2 transition cursor-pointer">
+            <span id="play-main-icon">▶</span>
+            <span id="play-main-label">Play Experiment</span>
+          </button>
+
+          <!-- Slider + Clickable Stage Ticks -->
+          <div class="flex-1 min-w-[190px]">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                Interactive Reaction Timeline
+              </span>
+              <div class="flex items-center gap-2">
+                <span id="slider-pct" class="mono text-xs font-extrabold px-2 py-0.5 rounded bg-slate-950 text-emerald-300 border border-emerald-500/40">
+                  0%
+                </span>
+                <button id="btn-reset-step" type="button" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold transition">
+                  ↺ Reset 0%
+                </button>
+              </div>
+            </div>
+
+            <input id="reaction-slider" type="range" min="0" max="100" value="0" step="0.5" class="lab-slider" />
+
+            <!-- Clickable Stage Tick Markers -->
+            <div class="grid grid-cols-4 text-[10px] font-semibold mt-1">
+              <button type="button" data-jump="0" class="tick-btn text-left text-cyan-300 hover:text-white transition">0% Initial</button>
+              <button type="button" data-jump="30" class="tick-btn text-center text-slate-400 hover:text-white transition">30% Add Reagent</button>
+              <button type="button" data-jump="65" class="tick-btn text-center text-slate-400 hover:text-white transition">65% Reaction/Test</button>
+              <button type="button" data-jump="100" class="tick-btn text-right text-slate-400 hover:text-white transition">100% Result</button>
+            </div>
+          </div>
+
+          <!-- DIRECT BOTTOM VIVA VOCE BUTTON -->
+          <button id="btn-dock-viva" type="button" class="shrink-0 px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-extrabold text-xs shadow-lg border border-purple-300/35 flex items-center gap-1.5 transition cursor-pointer">
+            <span>🎓</span>
+            <span>Viva Voce</span>
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 4. INTERACTIVE 6-QUESTION CBSE VIVA VOCE MODAL -->
+  <div id="viva-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+    <div class="hud-glass rounded-3xl max-w-xl w-full p-5 sm:p-6 border border-purple-400/40 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">VidyaQuest Class 10 NCERT Assessment</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-white">Viva Voce — Properties of Acids &amp; Bases</h2>
+        </div>
+        <button id="btn-close-viva" type="button" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Quiz Pane -->
+      <div id="viva-quiz-pane" class="mt-3.5">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span id="viva-q-num">Question 1 of 6</span>
+          <span id="viva-score-tag" class="mono text-emerald-400 font-bold">Score: 0 / 6</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full mt-1.5 overflow-hidden">
+          <div id="viva-bar" class="h-full bg-gradient-to-r from-emerald-400 to-purple-400 transition-all duration-300" style="width: 16.6%;"></div>
+        </div>
+
+        <h3 id="viva-q-text" class="text-sm sm:text-base font-bold text-white mt-4 leading-snug">
+          Question text
+        </h3>
+
+        <div id="viva-options-list" class="mt-3 space-y-2"></div>
+
+        <div id="viva-explanation" class="hidden mt-3 p-3 rounded-xl border text-xs leading-relaxed"></div>
+
+        <div class="mt-4 flex items-center justify-between pt-2 border-t border-slate-800">
+          <button id="btn-viva-return" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+            ← Return to 3D Lab
+          </button>
+          <button id="btn-viva-next" type="button" disabled class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 disabled:opacity-40 text-slate-950 text-xs font-extrabold shadow transition">
+            Next Question →
+          </button>
+        </div>
+      </div>
+
+      <!-- Score Summary Pane -->
+      <div id="viva-summary-pane" class="hidden mt-4 text-center space-y-3">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-2xl shadow-lg">
+          🏆
+        </div>
+        <h3 class="text-lg sm:text-xl font-extrabold text-white">Viva Voce Completed!</h3>
+        <div id="viva-final-badge" class="inline-block px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-extrabold text-xl mono">
+          6 / 6
+        </div>
+        <p id="viva-remark-text" class="text-xs sm:text-sm text-slate-300 max-w-md mx-auto">
+          Outstanding conceptual understanding of Acids and Bases!
+        </p>
+        <div class="pt-2 flex justify-center gap-2.5">
+          <button id="btn-viva-retake" type="button" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition">
+            ↻ Retake Viva
+          </button>
+          <button id="btn-viva-done" type="button" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 text-xs font-extrabold shadow transition">
+            Back to 3D Workbench
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * ============================================================================
+     * VIDYAQUEST 3D CHEMISTRY VIRTUAL LAB — CLASS 10 NCERT (ACIDS & BASES)
+     * Rock-Solid Auto-Play Engine + Projected 3D Callouts + Single-Screen HUD
+     * ============================================================================
+     */
+
+    // ----------------------------------------------------------------------------
+    // 1. CURRICULUM DATA & STAGE-BY-STAGE LIVE NARRATION
+    // ----------------------------------------------------------------------------
+    const EXPERIMENTS = [
+      {
+        id: 0,
+        title: "1. Litmus Paper Test",
+        eqAcid: "HCl(aq) → H⁺(aq) + Cl⁻(aq)  [Blue → Red]",
+        eqBase: "NaOH(aq) → Na⁺(aq) + OH⁻(aq)  [Red → Blue]",
+        inference: "Acids release H⁺(aq) ions turning blue litmus red; bases release OH⁻(aq) ions turning red litmus blue.",
+        camPos: new THREE.Vector3(-0.55, 3.65, 8.35),
+        camTarget: new THREE.Vector3(-0.55, 2.05, 0),
+        describe: (p) => {
+          if (p < 25) {
+            return {
+              banner: "Vivid blue & red litmus strips are suspended above Tube A (dil. HCl) and Tube B (dil. NaOH).",
+              tubeAState: "Strips Ready",
+              tubeBState: "Strips Ready",
+              obsA: "Blue & red litmus strips poised above dilute hydrochloric acid.",
+              obsB: "Blue & red litmus strips poised above dilute sodium hydroxide."
+            };
+          } else if (p < 55) {
+            return {
+              banner: "Litmus strips dip into both solutions! H⁺ ions in HCl and OH⁻ ions in NaOH begin reacting with the dye.",
+              tubeAState: "Dipping Strips",
+              tubeBState: "Dipping Strips",
+              obsA: "Blue litmus starts turning red in dilute HCl; red strip stays red.",
+              obsB: "Red litmus starts turning blue in dilute NaOH; blue strip stays blue."
+            };
+          } else if (p < 85) {
+            return {
+              banner: "Clear contrast! In Tube A (HCl), Blue Litmus turns RED. In Tube B (NaOH), Red Litmus turns BLUE!",
+              tubeAState: "Blue → Red",
+              tubeBState: "Red → Blue",
+              obsA: "Dipped half of blue litmus strip turns bright crimson red.",
+              obsB: "Dipped half of red litmus strip turns deep royal blue."
+            };
+          } else {
+            return {
+              banner: "Result Confirmed: dil. HCl (Acid) turns Blue Litmus RED; dil. NaOH (Base) turns Red Litmus BLUE.",
+              tubeAState: "Acid Confirmed",
+              tubeBState: "Base Confirmed",
+              obsA: "Final: Blue litmus → Red | Red litmus → No change.",
+              obsB: "Final: Red litmus → Blue | Blue litmus → No change."
+            };
+          }
+        }
+      },
+      {
+        id: 1,
+        title: "2. Phenolphthalein Test",
+        eqAcid: "HCl(aq) + Phenolphthalein → Colourless (pH < 8.2)",
+        eqBase: "NaOH(aq) + Phenolphthalein → Vibrant Pink (pH > 8.2)",
+        inference: "Phenolphthalein is a synthetic acid-base indicator that stays colourless in acids and turns magenta-pink in bases.",
+        camPos: new THREE.Vector3(-0.55, 3.65, 8.35),
+        camTarget: new THREE.Vector3(-0.55, 2.05, 0),
+        describe: (p) => {
+          if (p < 25) {
+            return {
+              banner: "Phenolphthalein indicator droppers are poised above Tube A (dil. HCl) and Tube B (dil. NaOH).",
+              tubeAState: "Dropper Ready",
+              tubeBState: "Dropper Ready",
+              obsA: "Clear dilute HCl awaits phenolphthalein drops.",
+              obsB: "Clear dilute NaOH awaits phenolphthalein drops."
+            };
+          } else if (p < 55) {
+            return {
+              banner: "2–3 drops of phenolphthalein fall into both test tubes! Watch the indicator diffuse in each solution.",
+              tubeAState: "Adding Drops",
+              tubeBState: "Adding Drops",
+              obsA: "Phenolphthalein enters acidic HCl; solution stays completely colourless.",
+              obsB: "OH⁻ ions in NaOH ionize phenolphthalein, initiating a pink swirl."
+            };
+          } else if (p < 85) {
+            return {
+              banner: "Stark contrast! Tube A (dil. HCl) remains COLOURLESS, while Tube B (dil. NaOH) turns VIBRANT MAGENTA-PINK!",
+              tubeAState: "Colourless",
+              tubeBState: "Pink Swirl",
+              obsA: "No colour change in acidic medium (pH < 8.2).",
+              obsB: "Deep magenta-pink colour spreads throughout basic NaOH solution."
+            };
+          } else {
+            return {
+              banner: "Result Confirmed: Phenolphthalein stays COLOURLESS in dil. HCl (Acid) and turns VIBRANT PINK in dil. NaOH (Base).",
+              tubeAState: "Acid: Colourless",
+              tubeBState: "Base: Pink",
+              obsA: "Final: Phenolphthalein + HCl → Remains colourless.",
+              obsB: "Final: Phenolphthalein + NaOH → Turns vibrant pink."
+            };
+          }
+        }
+      },
+      {
+        id: 2,
+        title: "3. Zinc Metal (H₂ Pop Test)",
+        eqAcid: "Zn(s) + 2HCl(aq) → ZnCl₂(aq) + H₂(g)↑",
+        eqBase: "Zn(s) + 2NaOH(aq) —(Δ)→ Na₂ZnO₂(aq) + H₂(g)↑",
+        inference: "Active metals like Zinc displace Hydrogen gas (H₂) from both acids and warm strong bases; H₂ burns with a 'POP' sound.",
+        camPos: new THREE.Vector3(-0.55, 3.85, 8.65),
+        camTarget: new THREE.Vector3(-0.55, 2.05, 0),
+        describe: (p) => {
+          if (p < 25) {
+            return {
+              banner: "Shiny Zinc (Zn) granules are held above dil. HCl and gently warmed dil. NaOH.",
+              tubeAState: "Zn Ready",
+              tubeBState: "Warm + Zn",
+              obsA: "Metallic zinc granules ready to drop into dilute HCl.",
+              obsB: "Metallic zinc granules ready to drop into warmed dilute NaOH."
+            };
+          } else if (p < 55) {
+            return {
+              banner: "Zinc granules sink into both tubes! Brisk H₂ bubbles rise in HCl and steady H₂ bubbles evolve in warm NaOH.",
+              tubeAState: "Brisk H₂ ↑",
+              tubeBState: "Gentle H₂ ↑",
+              obsA: "Vigorous effervescence of colourless, odourless Hydrogen (H₂) gas.",
+              obsB: "Sodium zincate (Na₂ZnO₂) forms with steady Hydrogen (H₂) gas bubbles."
+            };
+          } else if (p < 85) {
+            return {
+              banner: "A burning wooden splinter approaches Tube A — Hydrogen gas ignites with a sharp 'POP!' sound!",
+              tubeAState: "🔥 POP Test!",
+              tubeBState: "H₂ Evolving",
+              obsA: "Burning splinter ignites accumulated H₂ gas with a blue-orange flare & POP!",
+              obsB: "Hydrogen gas continues bubbling steadily from warmed NaOH."
+            };
+          } else {
+            return {
+              banner: "Result Confirmed: Zinc reacts with HCl and warm NaOH to evolve Hydrogen (H₂) gas, confirmed by the 'POP' test!",
+              tubeAState: "H₂ Confirmed",
+              tubeBState: "H₂ Confirmed",
+              obsA: "Final: Zn + 2HCl → ZnCl₂ + H₂↑ (burns with POP sound).",
+              obsB: "Final: Zn + 2NaOH → Na₂ZnO₂ + H₂↑ (Sodium Zincate)."
+            };
+          }
+        }
+      },
+      {
+        id: 3,
+        title: "4. Solid Na₂CO₃ (CO₂ Test)",
+        eqAcid: "Na₂CO₃(s) + 2HCl(aq) → 2NaCl(aq) + H₂O(l) + CO₂(g)↑",
+        eqBase: "Na₂CO₃(s) + NaOH(aq) → No Reaction (Both are basic)",
+        inference: "Metal carbonates react with acids to release CO₂ gas (which turns lime water milky via CaCO₃), but do not react with bases.",
+        camPos: new THREE.Vector3(0.65, 3.95, 9.45),
+        camTarget: new THREE.Vector3(0.65, 2.0, 0),
+        describe: (p) => {
+          if (p < 25) {
+            return {
+              banner: "White solid Sodium Carbonate (Na₂CO₃) is ready; bent delivery tube links Tube A (HCl) to Tube C (Lime Water).",
+              tubeAState: "Connected",
+              tubeBState: "Ready",
+              obsA: "Bent glass delivery tube seals Tube A to Tube C containing clear Ca(OH)₂.",
+              obsB: "Tube B contains dilute NaOH without a delivery tube."
+            };
+          } else if (p < 55) {
+            return {
+              banner: "Solid Na₂CO₃ drops into both tubes! Brisk CO₂ effervescence occurs in HCl, while NaOH shows NO reaction.",
+              tubeAState: "Brisk CO₂ ↑",
+              tubeBState: "No Reaction",
+              obsA: "Na₂CO₃ dissolves rapidly with brisk Carbon Dioxide (CO₂) gas evolution.",
+              obsB: "White Na₂CO₃ settles at the bottom; no gas bubbles form in NaOH."
+            };
+          } else if (p < 85) {
+            return {
+              banner: "CO₂ gas travels through the curved delivery tube and bubbles into Tube C, turning Lime Water MILKY WHITE!",
+              tubeAState: "CO₂ → Tube C",
+              tubeBState: "No Reaction",
+              obsA: "CO₂ passes into Ca(OH)₂ forming insoluble white CaCO₃ precipitate.",
+              obsB: "No reaction occurs because both Na₂CO₃ and NaOH are basic."
+            };
+          } else {
+            return {
+              banner: "Result Confirmed: HCl + Na₂CO₃ evolves CO₂ turning Lime Water MILKY (CaCO₃); NaOH shows NO reaction.",
+              tubeAState: "Milky CaCO₃",
+              tubeBState: "No Reaction",
+              obsA: "Final: Ca(OH)₂ + CO₂ → CaCO₃↓ (milky white) + H₂O.",
+              obsB: "Final: No reaction with base (NaOH)."
+            };
+          }
+        }
+      }
+    ];
+
+    const VIVA_QUESTIONS = [
+      {
+        q: "1. What colour change is observed when blue litmus paper and red litmus paper are dipped into dilute HCl?",
+        options: [
+          "Blue litmus stays blue; red litmus turns blue",
+          "Blue litmus turns red; red litmus remains unchanged",
+          "Both blue and red litmus turn colourless",
+          "Both blue and red litmus turn green"
+        ],
+        correct: 1,
+        explanation: "Acids release H⁺(aq) ions in aqueous solution, turning blue litmus paper red while leaving red litmus unchanged."
+      },
+      {
+        q: "2. What happens when phenolphthalein indicator is added to dilute HCl and dilute NaOH respectively?",
+        options: [
+          "Pink in HCl and colourless in NaOH",
+          "Colourless in HCl and vibrant pink in NaOH",
+          "Yellow in both HCl and NaOH",
+          "Red in HCl and blue in NaOH"
+        ],
+        correct: 1,
+        explanation: "Phenolphthalein remains colourless in acidic media (pH < 8.2) and turns vibrant magenta-pink in basic solutions like NaOH."
+      },
+      {
+        q: "3. Which gas is produced when Zinc granules react with dilute HCl or warmed NaOH, and how is it tested?",
+        options: [
+          "Carbon dioxide (CO₂) — turns lime water milky",
+          "Oxygen (O₂) — relights a glowing splinter",
+          "Hydrogen (H₂) — burns with a characteristic 'pop' sound",
+          "Nitrogen (N₂) — extinguishes a burning candle silently"
+        ],
+        correct: 2,
+        explanation: "Zn + 2HCl → ZnCl₂ + H₂↑ and Zn + 2NaOH → Na₂ZnO₂ + H₂↑. Hydrogen gas burns with a sharp 'pop' sound."
+      },
+      {
+        q: "4. Why does lime water turn milky when CO₂ gas from HCl + Na₂CO₃ is bubbled through it?",
+        options: [
+          "Formation of soluble Sodium Chloride (NaCl)",
+          "Formation of insoluble white Calcium Carbonate (CaCO₃) precipitate",
+          "Formation of Sodium Zincate (Na₂ZnO₂)",
+          "Evaporation of water in the delivery tube"
+        ],
+        correct: 1,
+        explanation: "Ca(OH)₂(aq) + CO₂(g) → CaCO₃(s)↓ + H₂O(l). The insoluble white CaCO₃ suspension makes lime water appear milky."
+      },
+      {
+        q: "5. Why does solid Sodium Carbonate (Na₂CO₃) not evolve any gas when added to Sodium Hydroxide (NaOH)?",
+        options: [
+          "Na₂CO₃ is a strong acid",
+          "Both Na₂CO₃ and NaOH are basic in nature, so they do not react",
+          "NaOH is completely insoluble in water",
+          "CO₂ gas dissolves instantly without bubbling"
+        ],
+        correct: 1,
+        explanation: "Metal carbonates are basic salts; they react with acids to liberate CO₂ gas, but show no reaction with bases like NaOH."
+      },
+      {
+        q: "6. What happens if excess CO₂ gas is continuously passed through milky lime water?",
+        options: [
+          "The milkiness disappears because soluble Calcium Hydrogencarbonate Ca(HCO₃)₂ is formed",
+          "It turns bright pink due to phenolphthalein formation",
+          "Hydrogen gas starts evolving with a pop sound",
+          "A blue litmus precipitate settles at the bottom"
+        ],
+        correct: 0,
+        explanation: "CaCO₃(s) + H₂O(l) + CO₂(g) → Ca(HCO₃)₂(aq). Soluble calcium hydrogencarbonate clears the milky suspension."
+      }
+    ];
+
+    // ----------------------------------------------------------------------------
+    // 2. APPLICATION STATE & BULLETPROOF AUTO-PLAY MOTOR
+    // ----------------------------------------------------------------------------
+    const state = {
+      expIndex: 0,
+      progress: 0,           // Float 0.0 to 100.0
+      isPlaying: false,
+      demoAllMode: false,    // Sequential 4-experiment demo mode
+      demoPauseTimer: 0,
+      completed: [false, false, false, false],
+      soundOn: true,
+      popTriggered: false,
+      dropTriggered: false,
+      fizzCooldown: 0
+    };
+
+    // ----------------------------------------------------------------------------
+    // 3. WEB AUDIO SYNTHESIZER (Pop, Droplet, Fizz SFX)
+    // ----------------------------------------------------------------------------
+    class LabSoundFX {
+      constructor() { this.ctx = null; }
+      unlock() {
+        try {
+          if (!this.ctx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) this.ctx = new AC();
+          }
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+        } catch (e) {}
+      }
+      pop() {
+        if (!state.soundOn) return;
+        this.unlock();
+        if (!this.ctx) return;
+        const t = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(560, t);
+        osc.frequency.exponentialRampToValueAtTime(85, t + 0.16);
+        gain.gain.setValueAtTime(0.6, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.19);
+      }
+      drop() {
+        if (!state.soundOn) return;
+        this.unlock();
+        if (!this.ctx) return;
+        const t = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(640, t);
+        osc.frequency.exponentialRampToValueAtTime(1350, t + 0.08);
+        gain.gain.setValueAtTime(0.22, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.1);
+      }
+      fizz() {
+        if (!state.soundOn) return;
+        this.unlock();
+        if (!this.ctx) return;
+        const t = this.ctx.currentTime;
+        const len = Math.floor(this.ctx.sampleRate * 0.1);
+        const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (len * 0.45));
+        }
+        const src = this.ctx.createBufferSource();
+        src.buffer = buf;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(2400, t);
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.08, t);
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        src.start(t);
+      }
+    }
+    const sfx = new LabSoundFX();
+
+    // ----------------------------------------------------------------------------
+    // 4. THREE.JS SCENE, CAMERA & WORKBENCH APPARATUS
+    // ----------------------------------------------------------------------------
+    const canvasContainer = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x060b16);
+    scene.fog = new THREE.FogExp2(0x060b16, 0.026);
+
+    const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 80);
+    const desiredCamPos = EXPERIMENTS[0].camPos.clone();
+    const desiredCamTarget = EXPERIMENTS[0].camTarget.clone();
+    camera.position.copy(desiredCamPos);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
+    canvasContainer.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.target.copy(desiredCamTarget);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.075;
+    controls.minDistance = 4.6;
+    controls.maxDistance = 15.5;
+    controls.maxPolarAngle = Math.PI * 0.48;
+    controls.minPolarAngle = 0.18;
+
+    let isCamLerping = false;
+    controls.addEventListener('start', () => { isCamLerping = false; });
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xdbeafe, 0.7));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.25);
+    keyLight.position.set(5, 11, 7);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.55);
+    rimLight.position.set(-6, 6, -5);
+    scene.add(rimLight);
+
+    // Workbench Tabletop & Wooden Test Tube Rack
+    const tableMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(26, 0.4, 14),
+      new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.7, metalness: 0.15 })
+    );
+    tableMesh.position.y = -0.2;
+    tableMesh.receiveShadow = true;
+    scene.add(tableMesh);
+
+    const gridHelper = new THREE.GridHelper(24, 24, 0x1e293b, 0x111827);
+    gridHelper.position.y = 0.01;
+    scene.add(gridHelper);
+
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.65, metalness: 0.08 });
+    const steelMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.3, metalness: 0.8 });
+
+    const rackGroup = new THREE.Group();
+    const rackBase = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.22, 1.35), woodMat);
+    rackBase.position.set(-0.55, 0.11, 0);
+    rackBase.receiveShadow = true;
+
+    const rackTop = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.14, 1.35), woodMat);
+    rackTop.position.set(-0.55, 2.55, 0);
+
+    const pillarL = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.5, 16), steelMat);
+    pillarL.position.set(-2.75, 1.3, 0);
+    const pillarR = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.5, 16), steelMat);
+    pillarR.position.set(1.65, 1.3, 0);
+
+    rackGroup.add(rackBase, rackTop, pillarL, pillarR);
+    scene.add(rackGroup);
+
+    // Borosilicate Glass Material (Crystal-clear so internal litmus & reactions stay vivid)
+    const glassMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.19,
+      roughness: 0.08,
+      metalness: 0.02,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+
+    function buildTestTube(xPos, baseLiquidHex) {
+      const group = new THREE.Group();
+      group.position.set(xPos, 0.24, 0);
+
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 3.05, 32, 1, true), glassMat);
+      body.position.y = 1.82;
+      body.renderOrder = 3;
+      group.add(body);
+
+      const bottom = new THREE.Mesh(
+        new THREE.SphereGeometry(0.42, 32, 16, 0, Math.PI * 2, Math.PI * 0.5, Math.PI * 0.5),
+        glassMat
+      );
+      bottom.position.y = 0.3;
+      bottom.renderOrder = 3;
+      group.add(bottom);
+
+      const rim = new THREE.Mesh(
+        new THREE.TorusGeometry(0.43, 0.032, 12, 32),
+        new THREE.MeshStandardMaterial({ color: 0xe2e8f0, transparent: true, opacity: 0.55, roughness: 0.15 })
+      );
+      rim.rotation.x = Math.PI / 2;
+      rim.position.y = 3.35;
+      group.add(rim);
+
+      const liqMat = new THREE.MeshStandardMaterial({
+        color: baseLiquidHex,
+        transparent: true,
+        opacity: 0.44,
+        roughness: 0.2,
+        metalness: 0.0,
+        depthWrite: false
+      });
+      const liqCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.385, 0.385, 1.5, 28), liqMat);
+      liqCyl.position.y = 1.05;
+      liqCyl.renderOrder = 2;
+      const liqBot = new THREE.Mesh(
+        new THREE.SphereGeometry(0.385, 28, 14, 0, Math.PI * 2, Math.PI * 0.5, Math.PI * 0.5),
+        liqMat
+      );
+      liqBot.position.y = 0.31;
+      liqBot.renderOrder = 2;
+      const meniscus = new THREE.Mesh(
+        new THREE.TorusGeometry(0.36, 0.022, 10, 28),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 })
+      );
+      meniscus.rotation.x = Math.PI / 2;
+      meniscus.position.y = 1.8;
+
+      group.add(liqCyl, liqBot, meniscus);
+      scene.add(group);
+      return { group, liqMat };
+    }
+
+    const tubeHCl = buildTestTube(-1.95, 0xbae6fd);
+    const tubeNaOH = buildTestTube(0.85, 0xbae6fd);
+    const tubeLime = buildTestTube(3.45, 0xe0f2fe);
+
+    const limeStand = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.8, 0.2, 24), woodMat);
+    limeStand.position.set(3.45, 0.1, 0);
+    scene.add(limeStand);
+
+    // ----------------------------------------------------------------------------
+    // 5. EXPERIMENT PROPS (VIVID LITMUS, PHENOLPHTHALEIN, ZINC + SPLINTER, Na2CO3)
+    // ----------------------------------------------------------------------------
+
+    // --- TEST 1: VIVID HIGH-CONTRAST LITMUS STRIPS ---
+    const litmusGroup = new THREE.Group();
+    scene.add(litmusGroup);
+
+    function createLitmusStrips(xCenter) {
+      const holder = new THREE.Group();
+      holder.position.set(xCenter, 4.15, 0.06);
+
+      // Rich saturated matte pigments with subtle self-illumination so glass never washes them out
+      const blueTopMat = new THREE.MeshStandardMaterial({
+        color: 0x1d4ed8,
+        emissive: 0x1e40af,
+        emissiveIntensity: 0.32,
+        roughness: 0.85,
+        metalness: 0.0
+      });
+      const blueBotMat = new THREE.MeshStandardMaterial({
+        color: 0x1d4ed8,
+        emissive: 0x1e40af,
+        emissiveIntensity: 0.35,
+        roughness: 0.85,
+        metalness: 0.0
+      });
+
+      const bTop = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.95, 0.03), blueTopMat);
+      bTop.position.set(-0.15, 0.47, 0);
+      bTop.renderOrder = 1;
+      const bBot = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.96, 0.032), blueBotMat);
+      bBot.position.set(-0.15, -0.48, 0);
+      bBot.renderOrder = 1;
+
+      const redTopMat = new THREE.MeshStandardMaterial({
+        color: 0xdc2626,
+        emissive: 0x991b1b,
+        emissiveIntensity: 0.32,
+        roughness: 0.85,
+        metalness: 0.0
+      });
+      const redBotMat = new THREE.MeshStandardMaterial({
+        color: 0xdc2626,
+        emissive: 0x991b1b,
+        emissiveIntensity: 0.35,
+        roughness: 0.85,
+        metalness: 0.0
+      });
+
+      const rTop = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.95, 0.03), redTopMat);
+      rTop.position.set(0.15, 0.47, 0);
+      rTop.renderOrder = 1;
+      const rBot = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.96, 0.032), redBotMat);
+      rBot.position.set(0.15, -0.48, 0);
+      rBot.renderOrder = 1;
+
+      // Sharp wet-line divider bands where strips dip into the solution
+      const wetLineMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+      const bLine = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.035, 0.038), wetLineMat);
+      bLine.position.set(-0.15, 0.0, 0);
+      const rLine = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.035, 0.038), wetLineMat);
+      rLine.position.set(0.15, 0.0, 0);
+
+      const clip = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.16, 0.14), steelMat);
+      clip.position.set(0, 0.98, 0);
+
+      holder.add(bTop, bBot, rTop, rBot, bLine, rLine, clip);
+      litmusGroup.add(holder);
+      return { holder, blueBotMat, redBotMat };
+    }
+    const litmusHCl = createLitmusStrips(-1.95);
+    const litmusNaOH = createLitmusStrips(0.85);
+
+    // --- TEST 2: PHENOLPHTHALEIN DROPPERS ---
+    const dropperGroup = new THREE.Group();
+    scene.add(dropperGroup);
+
+    function createPipette(xCenter) {
+      const g = new THREE.Group();
+      g.position.set(xCenter, 4.45, 0);
+
+      const bulb = new THREE.Mesh(
+        new THREE.SphereGeometry(0.22, 18, 14),
+        new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.45 })
+      );
+      bulb.scale.set(1, 1.45, 1);
+      bulb.position.y = 0.62;
+
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.038, 0.9, 16), glassMat);
+      const droplet = new THREE.Mesh(
+        new THREE.SphereGeometry(0.08, 14, 14),
+        new THREE.MeshPhysicalMaterial({ color: 0xf472b6, transparent: true, opacity: 0.95 })
+      );
+      droplet.position.y = -0.52;
+
+      g.add(bulb, shaft, droplet);
+      dropperGroup.add(g);
+      return { g, bulb, droplet };
+    }
+    const pipetteHCl = createPipette(-1.95);
+    const pipetteNaOH = createPipette(0.85);
+
+    // --- TEST 3: ZINC GRANULES, BURNER & BURNING SPLINTER POP RING ---
+    const zincGroup = new THREE.Group();
+    scene.add(zincGroup);
+
+    function createZincGranules(xCenter) {
+      const list = [];
+      const mat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.88, roughness: 0.22 });
+      for (let i = 0; i < 6; i++) {
+        const mesh = new THREE.Mesh(new THREE.DodecahedronGeometry(0.105, 0), mat);
+        mesh.position.set(
+          xCenter + (Math.random() - 0.5) * 0.32,
+          3.95 + i * 0.11,
+          (Math.random() - 0.5) * 0.32
+        );
+        zincGroup.add(mesh);
+        list.push({ mesh, startY: mesh.position.y, delay: i * 0.05 });
+      }
+      return list;
+    }
+    const znHCl = createZincGranules(-1.95);
+    const znNaOH = createZincGranules(0.85);
+
+    // Spirit Lamp warming NaOH
+    const spiritLamp = new THREE.Group();
+    spiritLamp.position.set(0.85, 0.02, 0.9);
+    const lampBase = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.3, 0.36, 0.24, 20),
+      new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7, roughness: 0.3 })
+    );
+    lampBase.position.y = 0.12;
+    const lampFlame = new THREE.Mesh(
+      new THREE.ConeGeometry(0.11, 0.34, 16),
+      new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.85 })
+    );
+    lampFlame.position.y = 0.38;
+    spiritLamp.add(lampBase, lampFlame);
+    zincGroup.add(spiritLamp);
+
+    // Burning Splinter + Pop Flare & Shockwave Ring
+    const splinterGroup = new THREE.Group();
+    const woodStick = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.032, 0.032, 2.3, 12),
+      new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.8 })
+    );
+    woodStick.rotation.z = Math.PI * 0.36;
+    woodStick.position.set(0.95, 0.48, 0);
+
+    const emberFlame = new THREE.Mesh(
+      new THREE.SphereGeometry(0.16, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.95 })
+    );
+    emberFlame.scale.set(1, 1.65, 1);
+
+    const popFlare = new THREE.Mesh(
+      new THREE.SphereGeometry(0.46, 20, 20),
+      new THREE.MeshBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0 })
+    );
+
+    const popShockwave = new THREE.Mesh(
+      new THREE.RingGeometry(0.25, 0.38, 32),
+      new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide, transparent: true, opacity: 0 })
+    );
+
+    splinterGroup.add(woodStick, emberFlame, popFlare, popShockwave);
+    splinterGroup.position.set(-0.4, 4.7, 0);
+    zincGroup.add(splinterGroup);
+
+    // --- TEST 4: SOLID Na2CO3 & DELIVERY TUBE TO LIME WATER ---
+    const carbGroup = new THREE.Group();
+    scene.add(carbGroup);
+
+    function createCarbonatePowder(xCenter) {
+      const grains = [];
+      const mat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.9 });
+      for (let i = 0; i < 14; i++) {
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), mat);
+        mesh.position.set(
+          xCenter + (Math.random() - 0.5) * 0.34,
+          4.0 + Math.random() * 0.35,
+          (Math.random() - 0.5) * 0.34
+        );
+        carbGroup.add(mesh);
+        grains.push({ mesh, delay: (i / 14) * 0.3 });
+      }
+      return grains;
+    }
+    const powHCl = createCarbonatePowder(-1.95);
+    const powNaOH = createCarbonatePowder(0.85);
+
+    const rubberStopper = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.42, 0.36, 0.34, 20),
+      new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.85 })
+    );
+    rubberStopper.position.set(-1.95, 3.62, 0);
+    carbGroup.add(rubberStopper);
+
+    const bentCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-1.95, 3.45, 0),
+      new THREE.Vector3(-1.95, 4.45, 0),
+      new THREE.Vector3(0.75, 4.75, -0.3),
+      new THREE.Vector3(3.45, 4.45, 0),
+      new THREE.Vector3(3.45, 1.15, 0)
+    ]);
+    const bentTube = new THREE.Mesh(new THREE.TubeGeometry(bentCurve, 48, 0.062, 12, false), glassMat);
+    carbGroup.add(bentTube);
+
+    // Bubble Particle Pool
+    const bubbles = [];
+    const bGeo = new THREE.SphereGeometry(0.05, 10, 10);
+    const bMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.82 });
+    for (let i = 0; i < 75; i++) {
+      const m = new THREE.Mesh(bGeo, bMat);
+      m.visible = false;
+      scene.add(m);
+      bubbles.push({ mesh: m, active: false, x0: 0, z0: 0, speed: 0.02 + Math.random() * 0.02, phase: Math.random() * 6.28 });
+    }
+    function emitBubble(xCenter, yStart = 0.55) {
+      const b = bubbles.find(item => !item.active);
+      if (!b) return;
+      b.active = true;
+      b.x0 = xCenter + (Math.random() - 0.5) * 0.42;
+      b.z0 = (Math.random() - 0.5) * 0.42;
+      b.mesh.position.set(b.x0, yStart, b.z0);
+      const s = 0.65 + Math.random() * 0.85;
+      b.mesh.scale.set(s, s, s);
+      b.mesh.visible = true;
+    }
+
+    // ----------------------------------------------------------------------------
+    // 6. PROJECTED 3D HTML CALLOUTS UPDATER (CLAMPED TO OPEN STAGE BOUNDS)
+    // ----------------------------------------------------------------------------
+    const calloutTubeA = document.getElementById('callout-tube-a');
+    const calloutTubeB = document.getElementById('callout-tube-b');
+    const calloutTubeC = document.getElementById('callout-tube-c');
+    const calloutResA  = document.getElementById('callout-res-a');
+    const calloutResB  = document.getElementById('callout-res-b');
+    const calloutResC  = document.getElementById('callout-res-c');
+
+    let rightPanelVisible = true;
+    const projVec = new THREE.Vector3();
+    function positionCallout(el, x, y, z) {
+      projVec.set(x, y, z).project(camera);
+      if (projVec.z > 1) {
+        el.style.opacity = '0';
+        return;
+      }
+      const rawX = (projVec.x * 0.5 + 0.5) * window.innerWidth;
+      const rawY = (-projVec.y * 0.5 + 0.5) * window.innerHeight;
+
+      // Clamp safely inside unobstructed stage area so badges never overlap HUD panels
+      const minX = 76;
+      const maxX = (window.innerWidth >= 1024 && rightPanelVisible)
+        ? window.innerWidth - 365
+        : window.innerWidth - 85;
+      const minY = 148;
+      const maxY = window.innerHeight - 102;
+
+      const sx = Math.max(minX, Math.min(maxX, rawX));
+      const sy = Math.max(minY, Math.min(maxY, rawY));
+
+      el.style.left = `${sx}px`;
+      el.style.top = `${sy}px`;
+      el.style.opacity = '1';
+    }
+
+    function updateProjectedCallouts() {
+      positionCallout(calloutTubeA, -1.95, 0.65, 1.05);
+      positionCallout(calloutTubeB,  0.85, 0.65, 1.05);
+
+      if (state.expIndex === 3) {
+        calloutTubeC.classList.remove('hidden');
+        positionCallout(calloutTubeC, 3.45, 0.65, 1.05);
+      } else {
+        calloutTubeC.classList.add('hidden');
+      }
+
+      positionCallout(calloutResA, -1.95, 4.15, 0);
+      positionCallout(calloutResB,  0.85, 4.15, 0);
+      positionCallout(calloutResC,  3.45, 4.05, 0);
+    }
+
+    // ----------------------------------------------------------------------------
+    // 7. REAL-TIME SIMULATION SYNC (0% TO 100%)
+    // ----------------------------------------------------------------------------
+    const cClear = new THREE.Color(0xbae6fd);
+    const cPink = new THREE.Color(0xec4899);
+    const cLimeClear = new THREE.Color(0xe0f2fe);
+    const cLimeMilky = new THREE.Color(0xf8fafc);
+    const cBlue = new THREE.Color(0x1d4ed8);
+    const cBlueEmissive = new THREE.Color(0x1e40af);
+    const cRed = new THREE.Color(0xdc2626);
+    const cRedEmissive = new THREE.Color(0x991b1b);
+
+    const playMainBtn = document.getElementById('btn-play-main');
+    const playMainIcon = document.getElementById('play-main-icon');
+    const playMainLabel = document.getElementById('play-main-label');
+    const liveStatusPill = document.getElementById('live-status-pill');
+
+    function syncPlayButtonUI() {
+      if (state.isPlaying) {
+        playMainIcon.textContent = '⏸';
+        playMainLabel.textContent = state.demoAllMode ? 'Pause Demo' : 'Pause';
+        playMainBtn.className = 'shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg flex items-center gap-2 transition cursor-pointer';
+        liveStatusPill.textContent = state.demoAllMode ? '⚡ Auto-Demo Running...' : '▶ Experiment Running...';
+        liveStatusPill.className = 'text-[10px] font-bold text-emerald-300';
+      } else if (state.progress >= 99.5) {
+        playMainIcon.textContent = '↺';
+        playMainLabel.textContent = 'Replay Experiment';
+        playMainBtn.className = 'play-pulse shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg flex items-center gap-2 transition cursor-pointer';
+        liveStatusPill.textContent = '✅ Experiment Completed';
+        liveStatusPill.className = 'text-[10px] font-bold text-cyan-300';
+      } else {
+        playMainIcon.textContent = '▶';
+        playMainLabel.textContent = 'Play Experiment';
+        playMainBtn.className = 'play-pulse shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg flex items-center gap-2 transition cursor-pointer';
+        liveStatusPill.textContent = state.progress > 0 ? '⏸ Paused — Press Play to Resume' : 'Ready — Press Play';
+        liveStatusPill.className = 'text-[10px] font-semibold text-amber-300';
+      }
+    }
+
+    function updateLabScene() {
+      const p = state.progress;
+      const pctInt = Math.round(p);
+      const t = p / 100;
+      const exp = EXPERIMENTS[state.expIndex];
+
+      // Reset tube liquids (crystal-clear opacity so internal props pop vividly)
+      tubeHCl.liqMat.color.copy(cClear);
+      tubeHCl.liqMat.opacity = 0.44;
+      tubeNaOH.liqMat.color.copy(cClear);
+      tubeNaOH.liqMat.opacity = 0.44;
+      tubeLime.liqMat.color.copy(cLimeClear);
+      tubeLime.liqMat.opacity = 0.46;
+
+      // Toggle 3D props
+      litmusGroup.visible = (state.expIndex === 0);
+      dropperGroup.visible = (state.expIndex === 1);
+      zincGroup.visible = (state.expIndex === 2);
+      carbGroup.visible = (state.expIndex === 3);
+      tubeLime.group.visible = (state.expIndex === 3);
+      limeStand.visible = (state.expIndex === 3);
+
+      // Update Stage Badge & Narration Banner
+      let stageLabel = `STAGE 1 OF 4: INITIAL SETUP (${pctInt}%)`;
+      if (p >= 25 && p < 55) stageLabel = `STAGE 2 OF 4: REAGENT ADDED (${pctInt}%)`;
+      else if (p >= 55 && p < 85) stageLabel = `STAGE 3 OF 4: ACTIVE REACTION (${pctInt}%)`;
+      else if (p >= 85) stageLabel = `STAGE 4 OF 4: FINAL RESULT (${pctInt}%)`;
+
+      const info = exp.describe(p);
+      document.getElementById('slider-pct').textContent = `${pctInt}%`;
+      document.getElementById('stage-badge').textContent = stageLabel;
+      document.getElementById('narration-banner-text').textContent = info.banner;
+      document.getElementById('tube-a-state').textContent = info.tubeAState;
+      document.getElementById('tube-b-state').textContent = info.tubeBState;
+      document.getElementById('obs-tube-a').textContent = info.obsA;
+      document.getElementById('obs-tube-b').textContent = info.obsB;
+
+      // Hide dynamic result callouts by default
+      calloutResA.classList.add('hidden');
+      calloutResB.classList.add('hidden');
+      calloutResC.classList.add('hidden');
+
+      // --- TEST 1: LITMUS PAPER ---
+      if (state.expIndex === 0) {
+        const dip = Math.min(1, t / 0.42);
+        const y = 4.15 - dip * 2.12;
+        litmusHCl.holder.position.y = y;
+        litmusNaOH.holder.position.y = y;
+
+        const shift = Math.max(0, Math.min(1, (t - 0.32) / 0.4));
+        litmusHCl.blueBotMat.color.copy(cBlue).lerp(cRed, shift);
+        litmusHCl.blueBotMat.emissive.copy(cBlueEmissive).lerp(cRedEmissive, shift);
+
+        litmusNaOH.redBotMat.color.copy(cRed).lerp(cBlue, shift);
+        litmusNaOH.redBotMat.emissive.copy(cRedEmissive).lerp(cBlueEmissive, shift);
+
+        if (p >= 56) {
+          calloutResA.textContent = "Blue → Red | Red: No Change";
+          calloutResA.className = "callout-3d px-3 py-1 rounded-full bg-rose-600/95 border border-white/75 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap";
+          calloutResA.classList.remove('hidden');
+
+          calloutResB.textContent = "Red → Blue | Blue: No Change";
+          calloutResB.className = "callout-3d px-3 py-1 rounded-full bg-blue-600/95 border border-white/75 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap";
+          calloutResB.classList.remove('hidden');
+        }
+      }
+
+      // --- TEST 2: PHENOLPHTHALEIN ---
+      if (state.expIndex === 1) {
+        const dropT = Math.max(0, Math.min(1, (t - 0.12) / 0.4));
+        const sq = Math.sin(dropT * Math.PI) * 0.18;
+        pipetteHCl.bulb.scale.set(1 - sq, 1.45, 1 - sq);
+        pipetteNaOH.bulb.scale.set(1 - sq, 1.45, 1 - sq);
+
+        if (dropT > 0 && dropT < 1) {
+          pipetteHCl.droplet.visible = true;
+          pipetteNaOH.droplet.visible = true;
+          pipetteHCl.droplet.position.y = -0.52 - dropT * 2.5;
+          pipetteNaOH.droplet.position.y = -0.52 - dropT * 2.5;
+          if (!state.dropTriggered && dropT > 0.85) {
+            sfx.drop();
+            state.dropTriggered = true;
+          }
+        } else {
+          pipetteHCl.droplet.visible = false;
+          pipetteNaOH.droplet.visible = false;
+          if (dropT < 0.2) state.dropTriggered = false;
+        }
+
+        const pinkMix = Math.max(0, Math.min(1, (t - 0.45) / 0.45));
+        tubeNaOH.liqMat.color.copy(cClear).lerp(cPink, pinkMix);
+        tubeNaOH.liqMat.opacity = 0.44 + pinkMix * 0.46;
+
+        if (p >= 60) {
+          calloutResA.textContent = "Remains Colourless";
+          calloutResA.className = "callout-3d px-3 py-1 rounded-full bg-slate-800/95 border border-slate-400/70 text-[11px] font-extrabold text-slate-100 shadow-xl whitespace-nowrap";
+          calloutResA.classList.remove('hidden');
+
+          calloutResB.textContent = "Turns Vibrant Pink!";
+          calloutResB.className = "callout-3d px-3 py-1 rounded-full bg-pink-600/95 border border-white/70 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap";
+          calloutResB.classList.remove('hidden');
+        }
+      }
+
+      // --- TEST 3: ZINC METAL & H2 POP TEST ---
+      if (state.expIndex === 2) {
+        const dropF = Math.min(1, t / 0.28);
+        [znHCl, znNaOH].forEach(arr => {
+          arr.forEach(item => {
+            const lf = Math.max(0, Math.min(1, (dropF - item.delay * 0.4) / 0.7));
+            item.mesh.position.y = item.startY * (1 - lf) + 0.52 * lf;
+          });
+        });
+
+        const approach = Math.max(0, Math.min(1, (t - 0.48) / 0.26));
+        splinterGroup.position.set(-0.45 - approach * 1.35, 4.7 - approach * 1.1, 0);
+
+        if (t > 0.72) {
+          const waveT = (t - 0.72) / 0.28;
+          const pulse = Math.sin(waveT * Math.PI);
+          popFlare.material.opacity = Math.max(0.28, pulse * 0.92);
+          popFlare.scale.setScalar(1 + pulse * 0.9);
+          popShockwave.material.opacity = Math.max(0, (1 - waveT) * 0.9);
+          popShockwave.scale.setScalar(1 + waveT * 2.8);
+
+          calloutResA.textContent = "💥 POP! H₂ Gas Ignites";
+          calloutResA.className = "callout-3d pop-animate px-3 py-1 rounded-full bg-amber-500 border-2 border-white text-[11px] font-extrabold text-slate-950 shadow-xl whitespace-nowrap";
+          calloutResA.classList.remove('hidden');
+
+          if (!state.popTriggered) {
+            sfx.pop();
+            state.popTriggered = true;
+          }
+        } else {
+          popFlare.material.opacity = 0;
+          popShockwave.material.opacity = 0;
+          state.popTriggered = false;
+        }
+
+        if (p >= 35) {
+          calloutResB.textContent = "H₂ Gas Bubbles ↑";
+          calloutResB.className = "callout-3d px-3 py-1 rounded-full bg-sky-600/95 border border-white/60 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap";
+          calloutResB.classList.remove('hidden');
+        }
+      }
+
+      // --- TEST 4: SOLID Na2CO3 & CO2 LIME WATER TEST ---
+      if (state.expIndex === 3) {
+        const dropF = Math.min(1, t / 0.28);
+        rubberStopper.position.y = 4.25 - dropF * 0.63;
+
+        [powHCl, powNaOH].forEach((arr, idx) => {
+          arr.forEach(item => {
+            const lf = Math.max(0, Math.min(1, (dropF - item.delay * 0.4) / 0.7));
+            item.mesh.position.y = 4.0 * (1 - lf) + 0.5 * lf;
+            if (idx === 0) {
+              const dissolve = Math.max(0.01, 1 - Math.max(0, (t - 0.28) / 0.5));
+              item.mesh.scale.setScalar(dissolve);
+            } else {
+              item.mesh.scale.setScalar(1);
+            }
+          });
+        });
+
+        const milky = Math.max(0, Math.min(1, (t - 0.42) / 0.48));
+        tubeLime.liqMat.color.copy(cLimeClear).lerp(cLimeMilky, milky);
+        tubeLime.liqMat.opacity = 0.46 + milky * 0.52;
+
+        if (p >= 35) {
+          calloutResA.textContent = "CO₂ Gas Evolved ↑";
+          calloutResA.className = "callout-3d px-3 py-1 rounded-full bg-rose-600/95 border border-white/70 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap";
+          calloutResA.classList.remove('hidden');
+
+          calloutResB.textContent = "No Reaction (Base)";
+          calloutResB.className = "callout-3d px-3 py-1 rounded-full bg-slate-800/95 border border-slate-500 text-[11px] font-bold text-slate-300 shadow-xl whitespace-nowrap";
+          calloutResB.classList.remove('hidden');
+        }
+
+        if (p >= 62) {
+          calloutResC.textContent = "Milky Precipitate (CaCO₃)";
+          calloutResC.className = "callout-3d px-3 py-1 rounded-full bg-emerald-600/95 border border-white/75 text-[11px] font-extrabold text-white shadow-xl whitespace-nowrap";
+          calloutResC.classList.remove('hidden');
+        }
+      }
+
+      // Mark experiment completed at >= 92% and reveal the quick Viva CTA pill
+      const vivaReadyBanner = document.getElementById('viva-ready-banner');
+      if (p >= 92) {
+        if (!state.completed[state.expIndex]) {
+          state.completed[state.expIndex] = true;
+          document.getElementById(`badge-exp-${state.expIndex}`).textContent = '✅';
+          const doneCount = state.completed.filter(Boolean).length;
+          document.getElementById('header-progress-badge').textContent = `${doneCount}/4`;
+        }
+        vivaReadyBanner.classList.remove('hidden');
+        vivaReadyBanner.classList.add('flex');
+      } else {
+        vivaReadyBanner.classList.add('hidden');
+        vivaReadyBanner.classList.remove('flex');
+      }
+    }
+
+    // ----------------------------------------------------------------------------
+    // 8. BULLETPROOF PLAY, REPLAY, DEMO-ALL & SLIDER EVENT BINDINGS
+    // ----------------------------------------------------------------------------
+    const slider = document.getElementById('reaction-slider');
+
+    // Prominent Play / Pause / Replay Button
+    playMainBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      sfx.unlock();
+
+      if (state.isPlaying) {
+        // Pause current playback
+        state.isPlaying = false;
+        state.demoAllMode = false;
+      } else {
+        // If already at or near 100%, automatically reset to 0% and replay smoothly!
+        if (state.progress >= 99.5) {
+          state.progress = 0;
+          state.popTriggered = false;
+          state.dropTriggered = false;
+          slider.value = 0;
+          updateLabScene();
+        }
+        state.isPlaying = true;
+      }
+      syncPlayButtonUI();
+    });
+
+    // Demo All 4 Tests Sequentially Button
+    document.getElementById('btn-demo-all').addEventListener('click', () => {
+      sfx.unlock();
+      state.demoAllMode = true;
+      switchExperiment(0, true);
+    });
+
+    // Manual Slider Scrubbing (pauses auto-play immediately and updates scene)
+    slider.addEventListener('input', (e) => {
+      state.isPlaying = false;
+      state.demoAllMode = false;
+      state.progress = parseFloat(e.target.value);
+      updateLabScene();
+      syncPlayButtonUI();
+    });
+
+    // Clickable Stage Tick Markers (0%, 30%, 65%, 100%)
+    document.querySelectorAll('.tick-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.isPlaying = false;
+        state.demoAllMode = false;
+        state.progress = parseFloat(btn.getAttribute('data-jump'));
+        slider.value = state.progress;
+        updateLabScene();
+        syncPlayButtonUI();
+      });
+    });
+
+    // Reset 0% Button
+    document.getElementById('btn-reset-step').addEventListener('click', () => {
+      state.isPlaying = false;
+      state.demoAllMode = false;
+      state.progress = 0;
+      state.popTriggered = false;
+      state.dropTriggered = false;
+      slider.value = 0;
+      updateLabScene();
+      syncPlayButtonUI();
+    });
+
+    function switchExperiment(idx, autoStart = false) {
+      state.expIndex = idx;
+      state.progress = 0;
+      state.isPlaying = autoStart;
+      state.popTriggered = false;
+      state.dropTriggered = false;
+      slider.value = 0;
+
+      document.querySelectorAll('.exp-btn').forEach((btn, i) => {
+        if (i === idx) {
+          btn.className = 'exp-btn shrink-0 px-3 py-1.5 rounded-lg border border-emerald-400/80 bg-emerald-500/25 text-white text-xs font-bold transition flex items-center gap-1.5';
+        } else {
+          btn.className = 'exp-btn shrink-0 px-3 py-1.5 rounded-lg border border-slate-700/70 bg-slate-800/55 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition flex items-center gap-1.5';
+        }
+      });
+
+      const exp = EXPERIMENTS[idx];
+      document.getElementById('right-test-tag').textContent = `Test ${idx + 1}/4`;
+      document.getElementById('eq-acid').textContent = exp.eqAcid;
+      document.getElementById('eq-base').textContent = exp.eqBase;
+      document.getElementById('key-inference-text').textContent = exp.inference;
+
+      desiredCamPos.copy(exp.camPos);
+      desiredCamTarget.copy(exp.camTarget);
+      isCamLerping = true;
+
+      updateLabScene();
+      syncPlayButtonUI();
+    }
+
+    document.querySelectorAll('.exp-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.demoAllMode = false;
+        switchExperiment(parseInt(btn.getAttribute('data-exp'), 10), false);
+      });
+    });
+
+    document.getElementById('btn-reset-cam').addEventListener('click', () => {
+      const exp = EXPERIMENTS[state.expIndex];
+      desiredCamPos.copy(exp.camPos);
+      desiredCamTarget.copy(exp.camTarget);
+      isCamLerping = true;
+    });
+
+    document.getElementById('btn-sound').addEventListener('click', () => {
+      state.soundOn = !state.soundOn;
+      document.getElementById('sound-icon').textContent = state.soundOn ? '🔊' : '🔇';
+      document.getElementById('sound-text').textContent = state.soundOn ? 'Sound' : 'Muted';
+    });
+
+    document.getElementById('btn-toggle-right').addEventListener('click', () => {
+      rightPanelVisible = !rightPanelVisible;
+      const rightPanel = document.getElementById('right-obs-panel');
+      const toggleText = document.getElementById('toggle-right-text');
+      if (rightPanelVisible) {
+        rightPanel.classList.remove('lg:hidden');
+        rightPanel.classList.add('lg:block');
+        toggleText.textContent = 'Hide Notes';
+      } else {
+        rightPanel.classList.remove('lg:block');
+        rightPanel.classList.add('lg:hidden');
+        toggleText.textContent = 'Show Notes';
+      }
+    });
+
+    // ----------------------------------------------------------------------------
+    // 9. INTERACTIVE 5-QUESTION CBSE VIVA VOCE MODAL
+    // ----------------------------------------------------------------------------
+    let qIdx = 0;
+    let qScore = 0;
+    let qLocked = false;
+
+    const vivaModal = document.getElementById('viva-modal');
+    const quizPane = document.getElementById('viva-quiz-pane');
+    const summaryPane = document.getElementById('viva-summary-pane');
+
+    function openViva() {
+      state.isPlaying = false;
+      state.demoAllMode = false;
+      syncPlayButtonUI();
+      qIdx = 0;
+      qScore = 0;
+      quizPane.classList.remove('hidden');
+      summaryPane.classList.add('hidden');
+      renderQuestion();
+      vivaModal.classList.remove('hidden');
+      vivaModal.classList.add('flex');
+    }
+
+    function closeViva() {
+      vivaModal.classList.add('hidden');
+      vivaModal.classList.remove('flex');
+    }
+
+    function renderQuestion() {
+      qLocked = false;
+      const item = VIVA_QUESTIONS[qIdx];
+      document.getElementById('viva-q-num').textContent = `Question ${qIdx + 1} of ${VIVA_QUESTIONS.length}`;
+      document.getElementById('viva-score-tag').textContent = `Score: ${qScore} / ${VIVA_QUESTIONS.length}`;
+      document.getElementById('viva-bar').style.width = `${((qIdx + 1) / VIVA_QUESTIONS.length) * 100}%`;
+      document.getElementById('viva-q-text').textContent = item.q;
+
+      const expBox = document.getElementById('viva-explanation');
+      expBox.classList.add('hidden');
+
+      const nextBtn = document.getElementById('btn-viva-next');
+      nextBtn.disabled = true;
+      nextBtn.textContent = qIdx === VIVA_QUESTIONS.length - 1 ? 'Finish Viva →' : 'Next Question →';
+
+      const optList = document.getElementById('viva-options-list');
+      optList.innerHTML = '';
+
+      item.options.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'w-full text-left p-2.5 sm:p-3 rounded-xl border border-slate-700 bg-slate-800/65 hover:bg-slate-800 text-slate-200 text-xs font-medium transition flex items-center gap-2.5';
+        b.innerHTML = `
+          <span class="w-6 h-6 rounded-md bg-slate-900 border border-slate-600 flex items-center justify-center font-bold text-[11px] shrink-0">
+            ${String.fromCharCode(65 + i)}
+          </span>
+          <span>${opt}</span>
+        `;
+        b.addEventListener('click', () => selectVivaOption(i));
+        optList.appendChild(b);
+      });
+    }
+
+    function selectVivaOption(chosen) {
+      if (qLocked) return;
+      qLocked = true;
+      const item = VIVA_QUESTIONS[qIdx];
+      const buttons = document.getElementById('viva-options-list').querySelectorAll('button');
+      const expBox = document.getElementById('viva-explanation');
+
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === item.correct) {
+          btn.className = 'w-full text-left p-2.5 sm:p-3 rounded-xl border-2 border-emerald-400 bg-emerald-950/70 text-emerald-100 text-xs font-semibold flex items-center gap-2.5';
+        } else if (i === chosen) {
+          btn.className = 'w-full text-left p-2.5 sm:p-3 rounded-xl border-2 border-rose-500 bg-rose-950/70 text-rose-100 text-xs font-medium flex items-center gap-2.5';
+        } else {
+          btn.className = 'w-full text-left p-2.5 sm:p-3 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-500 text-xs flex items-center gap-2.5';
+        }
+      });
+
+      if (chosen === item.correct) {
+        qScore++;
+        expBox.className = 'mt-3 p-3 rounded-xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-xs leading-relaxed';
+        expBox.innerHTML = `<strong>✅ Correct!</strong> ${item.explanation}`;
+      } else {
+        expBox.className = 'mt-3 p-3 rounded-xl border border-rose-500/40 bg-rose-950/40 text-rose-200 text-xs leading-relaxed';
+        expBox.innerHTML = `<strong>❌ Incorrect.</strong> ${item.explanation}`;
+      }
+      expBox.classList.remove('hidden');
+      document.getElementById('viva-score-tag').textContent = `Score: ${qScore} / ${VIVA_QUESTIONS.length}`;
+      document.getElementById('btn-viva-next').disabled = false;
+    }
+
+    document.getElementById('btn-viva-next').addEventListener('click', () => {
+      if (qIdx < VIVA_QUESTIONS.length - 1) {
+        qIdx++;
+        renderQuestion();
+      } else {
+        quizPane.classList.add('hidden');
+        summaryPane.classList.remove('hidden');
+        document.getElementById('viva-final-badge').textContent = `${qScore} / ${VIVA_QUESTIONS.length}`;
+        document.getElementById('viva-remark-text').textContent =
+          qScore === VIVA_QUESTIONS.length ? "Outstanding! Perfect 6/6 score on CBSE Class 10 Acids & Bases." :
+          qScore >= 4 ? "Well done! Review the feedback to master every chemical test." :
+          "Run all 4 tests on the 3D workbench and retake the Viva Voce!";
+      }
+    });
+
+    document.getElementById('btn-open-viva').addEventListener('click', openViva);
+    document.getElementById('btn-dock-viva').addEventListener('click', openViva);
+    document.getElementById('btn-banner-viva').addEventListener('click', openViva);
+    document.getElementById('btn-close-viva').addEventListener('click', closeViva);
+    document.getElementById('btn-viva-return').addEventListener('click', closeViva);
+    document.getElementById('btn-viva-done').addEventListener('click', closeViva);
+    document.getElementById('btn-viva-retake').addEventListener('click', openViva);
+
+    // ----------------------------------------------------------------------------
+    // 10. MAIN RENDER & BULLETPROOF PLAYBACK LOOP
+    // ----------------------------------------------------------------------------
+    let lastTime = performance.now();
+    function animate(now) {
+      requestAnimationFrame(animate);
+      const dt = Math.min(0.05, Math.max(0.001, (now - lastTime) * 0.001));
+      lastTime = now;
+
+      // Smooth 10-second playback engine (10% per second)
+      if (state.isPlaying) {
+        state.progress = Math.min(100, state.progress + dt * 10.2);
+        slider.value = state.progress.toFixed(1);
+        updateLabScene();
+
+        if (state.progress >= 100) {
+          state.progress = 100;
+          slider.value = 100;
+          updateLabScene();
+
+          if (state.demoAllMode && state.expIndex < EXPERIMENTS.length - 1) {
+            state.demoPauseTimer += dt;
+            if (state.demoPauseTimer >= 1.2) {
+              state.demoPauseTimer = 0;
+              switchExperiment(state.expIndex + 1, true);
+            }
+          } else {
+            state.isPlaying = false;
+            state.demoAllMode = false;
+            syncPlayButtonUI();
+          }
+        }
+      }
+
+      // Smooth camera transition when switching tests or resetting view
+      if (isCamLerping) {
+        camera.position.lerp(desiredCamPos, 0.085);
+        controls.target.lerp(desiredCamTarget, 0.085);
+        if (camera.position.distanceTo(desiredCamPos) < 0.03) {
+          isCamLerping = false;
+        }
+      }
+
+      // Clamp camera target inside workbench bounds
+      controls.target.x = THREE.MathUtils.clamp(controls.target.x, -3.5, 3.5);
+      controls.target.y = THREE.MathUtils.clamp(controls.target.y, 0.5, 3.8);
+      controls.target.z = THREE.MathUtils.clamp(controls.target.z, -2.5, 2.5);
+
+      // Effervescence Bubble Generation
+      if (state.expIndex === 2 && state.progress >= 24) {
+        if (Math.random() < 0.55) emitBubble(-1.95, 0.55);
+        if (Math.random() < 0.26) emitBubble(0.85, 0.55);
+        state.fizzCooldown -= dt;
+        if (state.fizzCooldown <= 0) {
+          sfx.fizz();
+          state.fizzCooldown = 0.24;
+        }
+      } else if (state.expIndex === 3 && state.progress >= 24) {
+        if (Math.random() < 0.58) emitBubble(-1.95, 0.55);
+        if (state.progress >= 40 && Math.random() < 0.4) emitBubble(3.45, 1.15);
+        state.fizzCooldown -= dt;
+        if (state.fizzCooldown <= 0) {
+          sfx.fizz();
+          state.fizzCooldown = 0.22;
+        }
+      }
+
+      // Animate rising gas bubbles
+      for (let i = 0; i < bubbles.length; i++) {
+        const b = bubbles[i];
+        if (!b.active) continue;
+        b.mesh.position.y += b.speed;
+        b.mesh.position.x = b.x0 + Math.sin(now * 0.008 + b.phase) * 0.045;
+        if (b.mesh.position.y > 1.78) {
+          b.active = false;
+          b.mesh.visible = false;
+        }
+      }
+
+      // Flame flicker in Test 3
+      if (state.expIndex === 2) {
+        const fl = 0.9 + Math.sin(now * 0.025) * 0.14;
+        emberFlame.scale.set(fl, 1.6 * fl, fl);
+        lampFlame.scale.set(fl, fl, fl);
+      }
+
+      controls.update();
+      updateProjectedCallouts();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    window.onload = () => {
+      lastTime = performance.now();
+      switchExperiment(0, false);
+      requestAnimationFrame(animate);
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+{
+  "version": 1,
+  "labs": [
+    {
+      "labId": "chem-acids-bases-properties",
+      "subjectSlug": "chemistry",
+      "associatedMissionSlugs": ["chem-1"],
+      "title": "Properties of Acids & Bases 3D Lab",
+      "description": "Test litmus paper, phenolphthalein, methyl orange, and pH strips on common acids and bases in an interactive 3D chemistry bench.",
+      "difficulty": "Intermediate",
+      "estimatedDurationMinutes": 12,
+      "enabled": true,
+      "labFormat": "html_3d",
+      "entryAsset": "vidyaquest_3d_chemistry_lab_properties_of_acids_and_bases.html",
+      "instructions": [
+        "Inspect the reagent bottles and pH indicator strips on the 3D lab bench.",
+        "Test at least two acidic solutions and observe the indicator color changes.",
+        "Test at least two basic solutions and compare their pH values.",
+        "Record your observations and complete the verification check below."
+      ],
+      "interactionConfig": {
+        "mode": "chemistry_ph_indicators",
+        "supportsRotation": true,
+        "supportsZoom": true,
+        "supportsReset": true,
+        "observationPrompts": [
+          "What color does blue litmus turn in an acid?",
+          "What pH range did you observe for basic solutions?"
+        ]
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 3,
+        "minObservations": 1,
+        "verificationQuestions": [
+          {
+            "id": "q1",
+            "prompt": "Which indicator turns pink/magenta in a basic (alkaline) solution?",
+            "options": ["Blue litmus", "Phenolphthalein", "Distilled water"],
+            "correctIndex": 1
+          },
+          {
+            "id": "q2",
+            "prompt": "A solution with pH 2 is classified as:",
+            "options": ["Strongly acidic", "Neutral", "Strongly basic"],
+            "correctIndex": 0
+          }
+        ]
+      }
+    },
+    {
+      "labId": "chem-acid-base-titration",
+      "subjectSlug": "chemistry",
+      "associatedMissionSlugs": ["chem-2"],
+      "title": "3D Acid-Base Titration Laboratory",
+      "description": "Perform a controlled burette titration, add indicator drops, swirl the conical flask, and detect the exact neutralization endpoint.",
+      "difficulty": "Advanced",
+      "estimatedDurationMinutes": 15,
+      "enabled": true,
+      "labFormat": "html_3d",
+      "entryAsset": "vidyaquest_3d_acid_base_titration_lab.html",
+      "instructions": [
+        "Set up the burette and conical flask with the analyte and indicator.",
+        "Open the stopcock to add titrant gradually while swirling the flask.",
+        "Slow down near the endpoint until a faint persistent color change appears.",
+        "Record the final burette reading and verify your titration result."
+      ],
+      "interactionConfig": {
+        "mode": "chemistry_titration",
+        "supportsRotation": true,
+        "supportsZoom": true,
+        "supportsReset": true,
+        "observationPrompts": [
+          "What burette volume (mL) was required to reach the endpoint?",
+          "How did the indicator color change at neutralization?"
+        ]
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 3,
+        "minObservations": 1,
+        "verificationQuestions": [
+          {
+            "id": "q1",
+            "prompt": "Why do we add titrant drop-by-drop near the titration endpoint?",
+            "options": [
+              "To avoid overshooting the exact neutralization volume",
+              "To evaporate the indicator",
+              "To cool down the burette"
+            ],
+            "correctIndex": 0
+          },
+          {
+            "id": "q2",
+            "prompt": "At the equivalence point of a strong acid–strong base titration, the pH is:",
+            "options": ["1", "7", "14"],
+            "correctIndex": 1
+          }
+        ]
+      }
+    },
+    {
+      "labId": "bio-leaf-stomata-mount",
+      "subjectSlug": "biology",
+      "associatedMissionSlugs": ["bio-1"],
+      "title": "Temporary Mount of Leaf Peel (Stomata) 3D Lab",
+      "description": "Prepare a temporary leaf peel mount, stain with safranin, focus under the 3D compound microscope, and inspect guard cells and stomata.",
+      "difficulty": "Beginner",
+      "estimatedDurationMinutes": 10,
+      "enabled": true,
+      "labFormat": "html_3d",
+      "entryAsset": "temporary_mount_of_leaf_peel_stomata_3d_lab (2).html",
+      "instructions": [
+        "Peel the lower epidermis of the leaf and place it on the glass slide.",
+        "Add stain and glycerin, then gently lower the coverslip without air bubbles.",
+        "Focus the 3D microscope from low power to high power to view stomata.",
+        "Record your observation of the guard cells and complete the check."
+      ],
+      "interactionConfig": {
+        "mode": "biology_microscopy",
+        "supportsRotation": true,
+        "supportsZoom": true,
+        "supportsReset": true,
+        "observationPrompts": [
+          "Describe the shape of the guard cells surrounding each stomatal pore."
+        ]
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 3,
+        "minObservations": 1,
+        "verificationQuestions": [
+          {
+            "id": "q1",
+            "prompt": "Which cells control the opening and closing of a stomatal pore?",
+            "options": ["Guard cells", "Xylem vessels", "Root hairs"],
+            "correctIndex": 0
+          },
+          {
+            "id": "q2",
+            "prompt": "Why is glycerin used when mounting the stained leaf peel?",
+            "options": [
+              "To prevent the specimen from drying out",
+              "To dissolve the chlorophyll",
+              "To increase magnification"
+            ],
+            "correctIndex": 0
+          }
+        ]
+      }
+    },
+    {
+      "labId": "bio-human-heart-3d",
+      "subjectSlug": "biology",
+      "associatedMissionSlugs": ["bio-2"],
+      "title": "Human Heart 3D Anatomy & Circulation Lab",
+      "description": "Rotate, zoom, and inspect the 4 chambers, valves, aorta, and pulmonary vessels of the 3D human heart.",
+      "difficulty": "Master",
+      "estimatedDurationMinutes": 12,
+      "enabled": true,
+      "labFormat": "html_3d",
+      "entryAsset": "ncert_class_10_3d_human_heart_model.html",
+      "instructions": [
+        "Rotate and zoom the 3D heart model to inspect both anterior and posterior views.",
+        "Select labels for the Right Atrium, Right Ventricle, Left Atrium, and Left Ventricle.",
+        "Trace the path of deoxygenated and oxygenated blood through the vessels.",
+        "Record your findings and complete the circulation check."
+      ],
+      "interactionConfig": {
+        "mode": "biology_anatomy",
+        "supportsRotation": true,
+        "supportsZoom": true,
+        "supportsReset": true,
+        "observationPrompts": [
+          "Which chamber has the thickest muscular wall and why?"
+        ]
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 3,
+        "minObservations": 1,
+        "verificationQuestions": [
+          {
+            "id": "q1",
+            "prompt": "Which chamber pumps oxygenated blood into the aorta for the entire body?",
+            "options": ["Right Atrium", "Left Ventricle", "Right Ventricle"],
+            "correctIndex": 1
+          },
+          {
+            "id": "q2",
+            "prompt": "Which vessel carries deoxygenated blood from the heart to the lungs?",
+            "options": ["Pulmonary artery", "Aorta", "Pulmonary vein"],
+            "correctIndex": 0
+          }
+        ]
+      }
+    },
+    {
+      "labId": "coding-level-1",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-1"],
+      "title": "First Steps Coding Lab",
+      "description": "Write and execute your first programs using print statements, comments, and basic input/output.",
+      "difficulty": "Beginner",
+      "estimatedDurationMinutes": 20,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-1/level.json",
+      "instructions": [
+        "Select a programming language (Python, JavaScript, or Java).",
+        "Complete all 5 First Steps coding challenges.",
+        "Run your code with sample or custom input, then submit to pass all test cases."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-2",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-2"],
+      "title": "Variable Village Coding Lab",
+      "description": "Practice variables, integers, floats, strings, and type conversions across 5 challenges.",
+      "difficulty": "Beginner",
+      "estimatedDurationMinutes": 25,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-2/level.json",
+      "instructions": [
+        "Declare variables of appropriate data types and convert inputs cleanly.",
+        "Complete all 5 Variable Village coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-3",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-3"],
+      "title": "Logic Forest Coding Lab",
+      "description": "Master arithmetic, comparison, logical operators, and nested if/else branching.",
+      "difficulty": "Intermediate",
+      "estimatedDurationMinutes": 30,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-3/level.json",
+      "instructions": [
+        "Use conditional branching and logical operators to handle all edge cases.",
+        "Complete all 5 Logic Forest coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-4",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-4"],
+      "title": "Loop Valley Coding Lab",
+      "description": "Build iterative solutions with for loops, while loops, break/continue, and nested loops.",
+      "difficulty": "Intermediate",
+      "estimatedDurationMinutes": 30,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-4/level.json",
+      "instructions": [
+        "Use loops to repeat computations and generate structured outputs.",
+        "Complete all 5 Loop Valley coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-5",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-5"],
+      "title": "Function Castle Coding Lab",
+      "description": "Structure reusable code with functions, parameters, return values, and clean scope.",
+      "difficulty": "Intermediate",
+      "estimatedDurationMinutes": 35,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-5/level.json",
+      "instructions": [
+        "Decompose problems into focused, reusable functions.",
+        "Complete all 5 Function Castle coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-6",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-6"],
+      "title": "Array Kingdom Coding Lab",
+      "description": "Traverse and manipulate arrays and strings to solve searching and aggregation tasks.",
+      "difficulty": "Advanced",
+      "estimatedDurationMinutes": 35,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-6/level.json",
+      "instructions": [
+        "Iterate over arrays and strings carefully while handling boundary cases.",
+        "Complete all 5 Array Kingdom coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-7",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-7"],
+      "title": "Algorithm Mountain Coding Lab",
+      "description": "Implement linear search, binary search, sorting algorithms, and recursion.",
+      "difficulty": "Advanced",
+      "estimatedDurationMinutes": 40,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-7/level.json",
+      "instructions": [
+        "Implement classic searching, sorting, and recursive algorithms.",
+        "Complete all 5 Algorithm Mountain coding challenges."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    },
+    {
+      "labId": "coding-level-8",
+      "subjectSlug": "coding",
+      "associatedMissionSlugs": ["code-8"],
+      "title": "Master Arena Coding Lab",
+      "description": "Conquer mixed DSA challenges combining arrays, strings, functions, searching, and sorting.",
+      "difficulty": "Master",
+      "estimatedDurationMinutes": 45,
+      "enabled": true,
+      "labFormat": "coding_ide",
+      "entryAsset": "coding/levels/level-8/level.json",
+      "instructions": [
+        "Solve all 5 Master Arena DSA challenges cleanly and efficiently.",
+        "Pass every public and hidden test case to conquer Code Citadel."
+      ],
+      "interactionConfig": {
+        "mode": "coding_ide",
+        "supportsRotation": false,
+        "supportsZoom": false,
+        "supportsReset": true,
+        "observationPrompts": []
+      },
+      "completionCriteria": {
+        "minStepsCompleted": 5,
+        "minObservations": 0,
+        "verificationQuestions": []
+      }
+    }
+  ]
+}

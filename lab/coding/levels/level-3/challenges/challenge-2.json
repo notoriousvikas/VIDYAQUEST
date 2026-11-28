@@ -1,0 +1,63 @@
+{
+  "id": "l3-c2",
+  "order": 2,
+  "title": "Largest of Two Numbers",
+  "difficulty": "Easy",
+  "xpReward": 20,
+  "topic": "If/else",
+  "description": "Read two integers `a` and `b` and print the larger one. If they are equal, print that value.",
+  "instructions": [
+    "Read two integers separated by whitespace.",
+    "Compare them using `if / else` and print the larger integer."
+  ],
+  "constraints": [
+    "-10^9 <= a, b <= 10^9"
+  ],
+  "examples": [
+    {
+      "input": "10 25",
+      "output": "25"
+    },
+    {
+      "input": "-3 -7",
+      "output": "-3"
+    }
+  ],
+  "hints": [
+    "Check `if (a >= b)` print `a`, `else` print `b`.",
+    "Remember negative numbers: `-3 > -7`.",
+    "Print only the integer."
+  ],
+  "starterCode": {
+    "python": "import sys\na, b = map(int, sys.stdin.read().split()[:2])\n# Print the largest number\n",
+    "javascript": "const fs = require(\"fs\");\nconst [a, b] = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\n// Print the largest number\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        // Print the largest number\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "10 25",
+      "expectedOutput": "25",
+      "description": "Second larger"
+    },
+    {
+      "id": "pub-2",
+      "input": "-3 -7",
+      "expectedOutput": "-3",
+      "description": "Negative numbers"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "42 42",
+      "expectedOutput": "42"
+    },
+    {
+      "id": "hid-2",
+      "input": "100 50",
+      "expectedOutput": "100"
+    }
+  ],
+  "levelId": "level-3"
+}

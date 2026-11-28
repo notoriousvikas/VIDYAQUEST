@@ -1,0 +1,24 @@
+{
+  "levelId": "level-7",
+  "levelNumber": 7,
+  "missionSlug": "code-7",
+  "labId": "coding-level-7",
+  "title": "Algorithm Mountain",
+  "subtitle": "Searching, Sorting & Recursion",
+  "difficulty": "Advanced",
+  "topics": [
+    "Linear search",
+    "Binary search",
+    "Sorting",
+    "Recursion",
+    "Basic time complexity"
+  ],
+  "completionBonusXp": 100,
+  "challengeIds": [
+    "l7-c1",
+    "l7-c2",
+    "l7-c3",
+    "l7-c4",
+    "l7-c5"
+  ]
+}

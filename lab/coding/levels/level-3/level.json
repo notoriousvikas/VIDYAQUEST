@@ -1,0 +1,24 @@
+{
+  "levelId": "level-3",
+  "levelNumber": 3,
+  "missionSlug": "code-3",
+  "labId": "coding-level-3",
+  "title": "Logic Forest",
+  "subtitle": "Operators, Conditionals & Branching",
+  "difficulty": "Intermediate",
+  "topics": [
+    "Arithmetic operators",
+    "Comparison operators",
+    "Logical operators",
+    "If/else",
+    "Nested conditions"
+  ],
+  "completionBonusXp": 100,
+  "challengeIds": [
+    "l3-c1",
+    "l3-c2",
+    "l3-c3",
+    "l3-c4",
+    "l3-c5"
+  ]
+}

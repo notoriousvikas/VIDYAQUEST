@@ -1,0 +1,65 @@
+{
+  "id": "l6-c5",
+  "order": 5,
+  "title": "Second Largest Distinct Element",
+  "difficulty": "Hard",
+  "xpReward": 50,
+  "topic": "Array traversal & Edge cases",
+  "description": "Given `N` and `N` integers, find the second-largest **distinct** element in the array. If no second-largest distinct element exists (e.g., all elements are equal or `N < 2`), print `-1`.",
+  "instructions": [
+    "Read `N` and the array of `N` integers.",
+    "Find the second-largest distinct value in a single pass `O(N)` or by deduplicating.",
+    "Print `-1` if fewer than 2 distinct values exist."
+  ],
+  "constraints": [
+    "1 <= N <= 1000",
+    "-10^6 <= arr[i] <= 10^6"
+  ],
+  "examples": [
+    {
+      "input": "5\n10 5 20 20 8",
+      "output": "10"
+    },
+    {
+      "input": "3\n7 7 7",
+      "output": "-1"
+    }
+  ],
+  "hints": [
+    "Keep `first` and `second` initialized to `-Infinity` / `Integer.MIN_VALUE` (or `None` / `null`).",
+    "When `x > first`: `second = first; first = x;`. When `x < first` and `x > second`: `second = x;`.",
+    "If `second` was never updated, print `-1`."
+  ],
+  "starterCode": {
+    "python": "n = int(input().strip())\narr = list(map(int, input().split()))\n# Find second-largest distinct element or -1\n",
+    "javascript": "const fs = require(\"fs\");\nconst tokens = fs.readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\nconst n = tokens[0];\nconst arr = tokens.slice(1, 1 + n);\n// Find second-largest distinct element or -1\n",
+    "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();\n        // Find second-largest distinct element or -1\n    }\n}\n"
+  },
+  "publicTestCases": [
+    {
+      "id": "pub-1",
+      "input": "5\n10 5 20 20 8",
+      "expectedOutput": "10",
+      "description": "Duplicate max"
+    },
+    {
+      "id": "pub-2",
+      "input": "3\n7 7 7",
+      "expectedOutput": "-1",
+      "description": "All equal"
+    }
+  ],
+  "hiddenTestCases": [
+    {
+      "id": "hid-1",
+      "input": "4\n-1 -5 -2 -1",
+      "expectedOutput": "-2"
+    },
+    {
+      "id": "hid-2",
+      "input": "1\n99",
+      "expectedOutput": "-1"
+    }
+  ],
+  "levelId": "level-6"
+}
